@@ -3,6 +3,8 @@
 An open-source podcast-to-shorts clipper that runs on your own computer. The app and its
 command are called Clipper for short.
 
+![A clip job open in Clipper: the moments it picked on the left, the rendered vertical clip with its headline and word-by-word captions in the phone, and the transcript you trim by clicking words](docs/screenshot.png)
+
 It turns a podcast into vertical clips for TikTok and YouTube Shorts: a video file goes in,
 and 1080×1920 MP4s come out with the crop following whoever is
 talking, word-by-word captions burned in, an optional headline, a creator credit and
