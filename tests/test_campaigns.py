@@ -155,3 +155,12 @@ def test_the_projects_auto_campaign_loads():
     from clipper.pipeline import campaign_root
     c = load_campaign("auto", campaign_root())
     assert c.credit_handle == "auto" and c.required_hashtags == ["auto"]
+
+
+def test_a_typed_creator_becomes_a_clean_handle():
+    from clipper.campaigns import clean_handle
+    assert clean_handle("@Jane.Doe") == "@Jane.Doe"
+    assert clean_handle("  jane doe ") == "@janedoe"
+    assert clean_handle("@@jane/../x") == "@jane..x"            # nothing but letters, digits, . and _
+    assert clean_handle("") is None and clean_handle(None) is None and clean_handle("@") is None
+    assert len(clean_handle("a" * 80)) == 31

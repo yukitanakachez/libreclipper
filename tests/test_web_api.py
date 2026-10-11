@@ -370,3 +370,16 @@ def test_an_empty_dropped_file_is_refused(client, web_cfg):
     r = client.post("/api/uploads", params={"name": "empty.mp4"}, content=b"")
     assert r.status_code == 400 and "empty" in r.json()["detail"]
     assert list((web_cfg.jobs_dir / "uploads").iterdir()) == []
+
+
+def test_the_creator_typed_in_new_is_kept_with_the_job(client, web_cfg, tmp_path, monkeypatch):
+    monkeypatch.setattr(api, "has_video_stream", lambda path: True)
+    video = tmp_path / "ep.mp4"
+    video.write_bytes(b"x")
+    r = client.post("/api/jobs", json={"source": str(video), "campaign": "pod", "creator": " Jane Doe "})
+    assert r.status_code == 201
+    assert jobs.read_json(jobs.find_job(r.json()["id"], web_cfg).request)["creator"] == "@JaneDoe"
+    other = tmp_path / "ep2.mp4"
+    other.write_bytes(b"x")
+    r = client.post("/api/jobs", json={"source": str(other), "campaign": "pod"})
+    assert jobs.read_json(jobs.find_job(r.json()["id"], web_cfg).request)["creator"] is None

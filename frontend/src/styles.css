@@ -327,6 +327,8 @@ button.toggle.on, button.toggle.on:hover:not(:disabled) { color: var(--good-ink)
 .new-job { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end; }
 .new-job label { display: grid; gap: 4px; font-size: 0.8125rem; color: var(--muted); }
 .new-job .error { grid-column: 1 / -1; margin: 0; }
+.new-job label .optional { color: var(--faint); font-weight: 400; }
+.new-job label .hint { font-size: 0.75rem; color: var(--faint); }
 /* The video: one big target to drop a file on, or click for the computer's file chooser. */
 button.dropzone { grid-column: 1 / -1; width: 100%; min-height: 176px; padding: 24px; display: grid; gap: 6px;
   justify-items: center; align-content: center; text-align: center; font-weight: 400; white-space: normal;

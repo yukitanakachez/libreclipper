@@ -267,3 +267,34 @@ def test_picking_uses_the_campaign_as_it_applies_to_this_video(tmp_path, monkeyp
     monkeypatch.setattr(pipeline, "_pick", lambda t, m, campaign, *a, **k: seen.append(campaign) or [])
     pipeline.run_job("/videos/abc.mp4", "auto", cfg, job_id="abc")
     assert seen[0].credit_handle == "@C" and seen[0].required_hashtags == ["#c"]
+
+
+def test_the_creator_you_name_is_credited_and_tagged_by_the_auto_campaign(tmp_path, monkeypatch):
+    cfg = AppConfig(jobs_dir=tmp_path)
+    seen = []
+    _stub_all(monkeypatch, tmp_path)
+    file_meta = Meta(job_id="abc", source_kind="local", source="/videos/abc.mp4", title="abc",
+                     description="", channel="", duration=600.0, width=1280, height=720,
+                     fps=30.0, max_height=2160)                       # a file: no channel of its own
+    monkeypatch.setattr(pipeline, "_fetch", lambda *a, **k: file_meta)
+    monkeypatch.setattr(pipeline, "_pick", lambda t, m, campaign, *a, **k: seen.append(campaign) or [])
+
+    pipeline.run_job("/videos/abc.mp4", "auto", cfg, job_id="abc", creator=" jane.doe ")
+
+    assert seen[0].credit_enabled and seen[0].credit_handle == "@jane.doe"
+    assert seen[0].required_hashtags == ["#janedoe"]
+    paths = jobs.paths_for("abc", cfg)
+    assert jobs.read_json(paths.request)["creator"] == "@jane.doe"
+    assert jobs.read_json(paths.meta)["channel_handle"] == "@jane.doe"     # kept for later renders
+
+
+def test_with_no_creator_named_a_file_gets_no_credit(tmp_path, monkeypatch):
+    cfg = AppConfig(jobs_dir=tmp_path)
+    seen = []
+    _stub_all(monkeypatch, tmp_path)
+    monkeypatch.setattr(pipeline, "_fetch", lambda *a, **k: Meta(
+        job_id="abc", source_kind="local", source="/videos/abc.mp4", title="abc", description="",
+        channel="", duration=600.0, width=1280, height=720, fps=30.0, max_height=2160))
+    monkeypatch.setattr(pipeline, "_pick", lambda t, m, campaign, *a, **k: seen.append(campaign) or [])
+    pipeline.run_job("/videos/abc.mp4", "auto", cfg, job_id="abc")
+    assert not seen[0].credit_enabled and seen[0].required_hashtags == []

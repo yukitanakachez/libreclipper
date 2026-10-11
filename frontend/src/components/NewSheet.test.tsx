@@ -41,9 +41,22 @@ describe("NewSheet", () => {
     expect(zone()).toHaveAccessibleName(/vid9\.mp4/);
     expect(api.uploadVideo).not.toHaveBeenCalled();                               // chosen in place: no copy
     await userEvent.click(screen.getByRole("button", { name: /^start$/i }));
-    expect(api.createJob).toHaveBeenCalledWith("/videos/vid9.mp4", "pod");
+    expect(api.createJob).toHaveBeenCalledWith("/videos/vid9.mp4", "pod", "");
     expect(window.location.hash).toBe("#/clips/vid9");
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it("the creator you type is sent with the job, to be credited on its clips", async () => {
+    vi.mocked(api.createJob).mockClear();
+    vi.mocked(api.createJob).mockResolvedValue({ id: "vid9", existing: false });
+    render(<NewSheet onClose={vi.fn()} />);
+    await screen.findByRole("option", { name: "Pod" });
+    await chooseFile("/videos/vid9.mp4");
+    const creator = screen.getByRole("textbox", { name: /creator/i });
+    expect(creator).toHaveAccessibleDescription(/credited on the clip/i);
+    await userEvent.type(creator, " @JaneDoe ");
+    await userEvent.click(screen.getByRole("button", { name: /^start$/i }));
+    expect(api.createJob).toHaveBeenCalledWith("/videos/vid9.mp4", "pod", "@JaneDoe");
   });
 
   it("a video dropped on the area is copied in, with progress, then starts a job", async () => {
@@ -63,7 +76,7 @@ describe("NewSheet", () => {
     expect(await screen.findByText("Episode 12.mov")).toBeInTheDocument();
     expect(vi.mocked(api.uploadVideo).mock.calls[0][0]).toBe(file);
     await userEvent.click(screen.getByRole("button", { name: /^start$/i }));
-    expect(api.createJob).toHaveBeenCalledWith("/clipper/jobs/uploads/Episode 12.mov", "pod");
+    expect(api.createJob).toHaveBeenCalledWith("/clipper/jobs/uploads/Episode 12.mov", "pod", "");
   });
 
   it("where the server can't open a file chooser, the browser's own is used instead", async () => {

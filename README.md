@@ -124,7 +124,8 @@ many rendered clips you haven't posted yet. The bell in the top bar is an Inbox:
 review, finished renders and failures.
 
 **New** (N) starts a job: drop a video onto the big drop area, or click it to pick one in
-Finder, then choose a campaign. A video you pick in Finder is read where it is. A dropped
+Finder. **Creator** is optional: type the creator's @handle and it is shown as the credit on
+each clip and added as a hashtag (with the "Any video" campaign). Then choose a campaign. A video you pick in Finder is read where it is. A dropped
 video is copied into `jobs/uploads/` (a browser never says where a dropped file lives), and
 that copy is deleted with the job's other working files after `retention_days`.
 

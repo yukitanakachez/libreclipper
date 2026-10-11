@@ -23,6 +23,8 @@ def _parser() -> argparse.ArgumentParser:
     run = sub.add_parser("run", help="process a video file")
     run.add_argument("source")
     run.add_argument("--campaign", required=True)
+    run.add_argument("--creator", help="the creator's @handle, credited on the clip and added "
+                                       "as a hashtag by the auto campaign")
     run.add_argument("--stop-after", choices=pipeline.STEPS)
     run.add_argument("--from", dest="start_from", choices=pipeline.STEPS,
                      help="reuse the job's saved output of earlier steps")
@@ -50,7 +52,7 @@ def _parser() -> argparse.ArgumentParser:
 
 def _cmd_run(args, cfg: AppConfig) -> int:
     paths = pipeline.run_job(args.source, args.campaign, cfg, stop_after=args.stop_after,
-                             start_from=args.start_from)
+                             start_from=args.start_from, creator=args.creator)
     if not paths.candidates.exists():
         print(f"job {paths.root.name}: stopped after {args.stop_after}")
         return 0

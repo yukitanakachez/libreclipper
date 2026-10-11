@@ -15,11 +15,11 @@ afterEach(() => vi.unstubAllGlobals());
 describe("api", () => {
   it("creates a job with a JSON POST", async () => {
     const fetch = mockFetch(201, { id: "abc", existing: false });
-    expect(await api.createJob("/videos/abc.mp4", "pod")).toEqual({ id: "abc", existing: false });
+    expect(await api.createJob("/videos/abc.mp4", "pod", "@jane")).toEqual({ id: "abc", existing: false });
     const [url, init] = fetch.mock.calls[0];
     expect(url).toBe("/api/jobs");
     expect(init.method).toBe("POST");
-    expect(JSON.parse(init.body)).toEqual({ source: "/videos/abc.mp4", campaign: "pod" });
+    expect(JSON.parse(init.body)).toEqual({ source: "/videos/abc.mp4", campaign: "pod", creator: "@jane" });
   });
 
   it("surfaces the server's error detail", async () => {

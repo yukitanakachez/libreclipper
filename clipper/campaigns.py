@@ -135,6 +135,12 @@ def list_campaigns(root: Path) -> list[dict]:
     return listing
 
 
+def clean_handle(text: str | None) -> str | None:
+    """What someone typed for the creator ("@Jane.Doe", "jane doe ", "") as an @handle, or None."""
+    name = re.sub(r"[^A-Za-z0-9._]", "", text or "")[:30]
+    return f"@{name}" if name else None
+
+
 def creator_tag(meta) -> str | None:
     """#channelname: the creator's channel name, lower-case, letters and digits only."""
     name = re.sub(r"[^a-z0-9]", "", (getattr(meta, "channel", "") or "").lower())

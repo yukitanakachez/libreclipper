@@ -39,8 +39,9 @@ const post = (body?: unknown): RequestInit =>
 export const api = {
   listJobs: () => request<JobSummary[]>("/api/jobs"),
   getJob: (id: string) => request<JobDetail>(job(id)),
-  createJob: (source: string, campaign: string) =>
-    request<{ id: string; existing: boolean }>("/api/jobs", post({ source, campaign })),
+  /** `creator`: the @handle to credit on the clips ("" for none). */
+  createJob: (source: string, campaign: string, creator: string) =>
+    request<{ id: string; existing: boolean }>("/api/jobs", post({ source, campaign, creator })),
   patchCandidate: (id: string, n: number, patch: CandidatePatch) =>
     request<CandidateView>(`${job(id)}/candidates/${n}`, { method: "PATCH", body: JSON.stringify(patch) }),
   saveWordFixes: (id: string, fixes: Record<string, string>) =>

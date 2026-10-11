@@ -15,6 +15,7 @@ from clipper import jobs, shell
 from clipper.campaigns import (
     TEMPLATES,
     CampaignError,
+    clean_handle,
     list_campaigns,
     load_campaign,
     music_tracks,
@@ -30,6 +31,7 @@ router = APIRouter(prefix="/api")
 class NewJob(BaseModel):
     source: str
     campaign: str
+    creator: str | None = None      # the @handle to credit; a video file doesn't carry one
 
 
 class Repick(BaseModel):
@@ -131,6 +133,7 @@ def create_job(body: NewJob, request: Request):
 
     paths = jobs.paths_for(job_id, cfg)
     jobs.write_json(paths.request, {"source": source, "campaign": body.campaign,
+                                    "creator": clean_handle(body.creator),
                                     "created_at": datetime.now(UTC).isoformat()})
     jobs.set_status(paths, "queued")
     worker.submit(Task("run", job_id, source=source, campaign=body.campaign))

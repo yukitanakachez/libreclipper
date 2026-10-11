@@ -7,14 +7,14 @@ from __future__ import annotations
 
 import shutil
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from pathlib import Path
 
 from clipper import fetch, jobs, provision, render, shell
 from clipper import pick as pick_mod
 from clipper import transcribe as transcribe_mod
-from clipper.campaigns import Campaign, for_video, load_campaign
+from clipper.campaigns import Campaign, clean_handle, for_video, load_campaign
 from clipper.config import AppConfig
 from clipper.jobs import JobPaths
 from clipper.models import Candidate, CropPlan, Meta, Transcript
@@ -47,11 +47,25 @@ def _reframe(paths, transcript, meta, candidates):
     return plan_mod.reframe_candidates(paths, transcript, meta, candidates)
 
 
-def _record_request(paths: JobPaths, source: str, campaign_slug: str) -> None:
+def _record_request(paths: JobPaths, source: str, campaign_slug: str,
+                    creator: str | None = None) -> None:
     data = jobs.read_json(paths.request) if paths.request.exists() else {
         "created_at": datetime.now(UTC).isoformat()}
     data.update(source=source, campaign=campaign_slug)
+    if creator is not None:
+        data["creator"] = clean_handle(creator)
     jobs.write_json(paths.request, data)
+
+
+def _credit(meta: Meta, paths: JobPaths) -> Meta:
+    """A video file doesn't say whose it is: the creator you named when starting the job
+    becomes the video's channel, which is where "auto" credits and hashtags come from."""
+    handle = jobs.read_request(paths).get("creator")
+    if not handle:
+        return meta
+    meta = replace(meta, channel=handle.lstrip("@"), channel_handle=handle)
+    jobs.write_json(paths.meta, meta.to_dict())
+    return meta
 
 
 def _load(path: Path, step: str) -> dict:
@@ -69,19 +83,21 @@ def run_job(
     stop_after: str | None = None,
     start_from: str | None = None,
     job_id: str | None = None,
+    creator: str | None = None,
 ) -> JobPaths:
     """Run the steps in order. start_from reuses saved output of the steps before it.
-    job_id names an existing job's folder (else it comes from the file's name and place)."""
+    job_id names an existing job's folder (else it comes from the file's name and place).
+    creator is the @handle to credit, for campaigns that take it from the video ("auto")."""
     campaign = load_campaign(campaign_slug, campaign_root())   # before any download
     provision.ensure()                 # a first run may still be fetching ffmpeg: wait for it
     paths = jobs.paths_for(job_id or jobs.job_id_for(source), cfg)
-    _record_request(paths, source, campaign_slug)
+    _record_request(paths, source, campaign_slug, creator)
     first = STEPS.index(start_from) if start_from else 0
     step = "fetch"
     try:
         if first <= STEPS.index("fetch"):
             jobs.set_status(paths, "fetching")
-            meta = _fetch(source, paths, cfg)
+            meta = _credit(_fetch(source, paths, cfg), paths)
         else:
             meta = Meta.from_dict(_load(paths.meta, start_from))
         campaign = for_video(campaign, meta)       # "auto" credit/tags from this video's creator

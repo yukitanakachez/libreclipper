@@ -11,6 +11,7 @@ export default function NewJobForm({ onCreated }: { onCreated: (id: string, exis
   const [campaigns, setCampaigns] = useState<CampaignListing[]>([]);
   const [source, setSource] = useState("");               // the chosen video's path on this computer
   const [campaign, setCampaign] = useState("");
+  const [creator, setCreator] = useState("");             // the @handle to credit; a file doesn't say
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [over, setOver] = useState(false);                // a file is being dragged over the drop area
@@ -65,7 +66,7 @@ export default function NewJobForm({ onCreated }: { onCreated: (id: string, exis
     setBusy(true);
     setError(null);
     try {
-      const { id, existing } = await api.createJob(source, campaign);
+      const { id, existing } = await api.createJob(source, campaign, creator.trim());
       setSource("");
       onCreated(id, existing);
     } catch (err) {
@@ -104,6 +105,12 @@ export default function NewJobForm({ onCreated }: { onCreated: (id: string, exis
       </button>
       <input ref={picker} type="file" accept="video/*" hidden tabIndex={-1} aria-hidden="true"
              onChange={(e) => { void take(e.target.files?.[0]); e.target.value = ""; }} />
+      <label><span>Creator <span className="optional">(optional)</span></span>
+        <input value={creator} onChange={(e) => setCreator(e.target.value)} placeholder="@creatorname"
+               autoCapitalize="none" autoCorrect="off" spellCheck={false} maxLength={31}
+               aria-describedby="creator-hint" />
+        <span id="creator-hint" className="hint">Credited on the clip and added as a hashtag.</span>
+      </label>
       <label>Campaign
         <select value={campaign} onChange={(e) => setCampaign(e.target.value)} required>
           {campaigns.map((c) => (
