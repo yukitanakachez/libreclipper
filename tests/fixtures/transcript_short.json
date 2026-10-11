@@ -1,0 +1,1631 @@
+{
+  "words": [
+    {
+      "i": 0,
+      "text": "Welcome",
+      "start": 0.0,
+      "end": 0.32,
+      "prob": 0.95
+    },
+    {
+      "i": 1,
+      "text": "back",
+      "start": 0.42,
+      "end": 0.74,
+      "prob": 0.95
+    },
+    {
+      "i": 2,
+      "text": "to",
+      "start": 0.84,
+      "end": 1.16,
+      "prob": 0.95
+    },
+    {
+      "i": 3,
+      "text": "the",
+      "start": 1.26,
+      "end": 1.58,
+      "prob": 0.95
+    },
+    {
+      "i": 4,
+      "text": "show,",
+      "start": 1.68,
+      "end": 2.0,
+      "prob": 0.95
+    },
+    {
+      "i": 5,
+      "text": "today",
+      "start": 2.1,
+      "end": 2.42,
+      "prob": 0.95
+    },
+    {
+      "i": 6,
+      "text": "we",
+      "start": 2.52,
+      "end": 2.84,
+      "prob": 0.95
+    },
+    {
+      "i": 7,
+      "text": "are",
+      "start": 2.94,
+      "end": 3.26,
+      "prob": 0.95
+    },
+    {
+      "i": 8,
+      "text": "talking",
+      "start": 3.36,
+      "end": 3.68,
+      "prob": 0.95
+    },
+    {
+      "i": 9,
+      "text": "about",
+      "start": 3.78,
+      "end": 4.1,
+      "prob": 0.95
+    },
+    {
+      "i": 10,
+      "text": "side",
+      "start": 4.2,
+      "end": 4.52,
+      "prob": 0.95
+    },
+    {
+      "i": 11,
+      "text": "projects.",
+      "start": 4.62,
+      "end": 4.94,
+      "prob": 0.95
+    },
+    {
+      "i": 12,
+      "text": "Most",
+      "start": 5.59,
+      "end": 5.91,
+      "prob": 0.95
+    },
+    {
+      "i": 13,
+      "text": "people",
+      "start": 6.01,
+      "end": 6.33,
+      "prob": 0.95
+    },
+    {
+      "i": 14,
+      "text": "quit",
+      "start": 6.43,
+      "end": 6.75,
+      "prob": 0.95
+    },
+    {
+      "i": 15,
+      "text": "in",
+      "start": 6.85,
+      "end": 7.17,
+      "prob": 0.95
+    },
+    {
+      "i": 16,
+      "text": "the",
+      "start": 7.27,
+      "end": 7.59,
+      "prob": 0.95
+    },
+    {
+      "i": 17,
+      "text": "first",
+      "start": 7.69,
+      "end": 8.01,
+      "prob": 0.95
+    },
+    {
+      "i": 18,
+      "text": "three",
+      "start": 8.11,
+      "end": 8.43,
+      "prob": 0.95
+    },
+    {
+      "i": 19,
+      "text": "weeks,",
+      "start": 8.53,
+      "end": 8.85,
+      "prob": 0.95
+    },
+    {
+      "i": 20,
+      "text": "and",
+      "start": 8.95,
+      "end": 9.27,
+      "prob": 0.95
+    },
+    {
+      "i": 21,
+      "text": "it",
+      "start": 9.37,
+      "end": 9.69,
+      "prob": 0.95
+    },
+    {
+      "i": 22,
+      "text": "is",
+      "start": 9.79,
+      "end": 10.11,
+      "prob": 0.95
+    },
+    {
+      "i": 23,
+      "text": "almost",
+      "start": 10.21,
+      "end": 10.53,
+      "prob": 0.95
+    },
+    {
+      "i": 24,
+      "text": "never",
+      "start": 10.63,
+      "end": 10.95,
+      "prob": 0.95
+    },
+    {
+      "i": 25,
+      "text": "about",
+      "start": 11.05,
+      "end": 11.37,
+      "prob": 0.95
+    },
+    {
+      "i": 26,
+      "text": "talent.",
+      "start": 11.47,
+      "end": 11.79,
+      "prob": 0.95
+    },
+    {
+      "i": 27,
+      "text": "The",
+      "start": 12.44,
+      "end": 12.76,
+      "prob": 0.95
+    },
+    {
+      "i": 28,
+      "text": "real",
+      "start": 12.86,
+      "end": 13.18,
+      "prob": 0.95
+    },
+    {
+      "i": 29,
+      "text": "reason",
+      "start": 13.28,
+      "end": 13.6,
+      "prob": 0.95
+    },
+    {
+      "i": 30,
+      "text": "is",
+      "start": 13.7,
+      "end": 14.02,
+      "prob": 0.95
+    },
+    {
+      "i": 31,
+      "text": "that",
+      "start": 14.12,
+      "end": 14.44,
+      "prob": 0.95
+    },
+    {
+      "i": 32,
+      "text": "they",
+      "start": 14.54,
+      "end": 14.86,
+      "prob": 0.95
+    },
+    {
+      "i": 33,
+      "text": "pick",
+      "start": 14.96,
+      "end": 15.28,
+      "prob": 0.95
+    },
+    {
+      "i": 34,
+      "text": "a",
+      "start": 15.38,
+      "end": 15.7,
+      "prob": 0.95
+    },
+    {
+      "i": 35,
+      "text": "project",
+      "start": 15.8,
+      "end": 16.12,
+      "prob": 0.95
+    },
+    {
+      "i": 36,
+      "text": "whose",
+      "start": 16.22,
+      "end": 16.54,
+      "prob": 0.95
+    },
+    {
+      "i": 37,
+      "text": "feedback",
+      "start": 16.64,
+      "end": 16.96,
+      "prob": 0.95
+    },
+    {
+      "i": 38,
+      "text": "loop",
+      "start": 17.06,
+      "end": 17.38,
+      "prob": 0.95
+    },
+    {
+      "i": 39,
+      "text": "is",
+      "start": 17.48,
+      "end": 17.8,
+      "prob": 0.95
+    },
+    {
+      "i": 40,
+      "text": "too",
+      "start": 17.9,
+      "end": 18.22,
+      "prob": 0.95
+    },
+    {
+      "i": 41,
+      "text": "slow.",
+      "start": 18.32,
+      "end": 18.64,
+      "prob": 0.95
+    },
+    {
+      "i": 42,
+      "text": "If",
+      "start": 19.29,
+      "end": 19.61,
+      "prob": 0.95
+    },
+    {
+      "i": 43,
+      "text": "you",
+      "start": 19.71,
+      "end": 20.03,
+      "prob": 0.95
+    },
+    {
+      "i": 44,
+      "text": "cannot",
+      "start": 20.13,
+      "end": 20.45,
+      "prob": 0.95
+    },
+    {
+      "i": 45,
+      "text": "see",
+      "start": 20.55,
+      "end": 20.87,
+      "prob": 0.95
+    },
+    {
+      "i": 46,
+      "text": "progress",
+      "start": 20.97,
+      "end": 21.29,
+      "prob": 0.95
+    },
+    {
+      "i": 47,
+      "text": "in",
+      "start": 21.39,
+      "end": 21.71,
+      "prob": 0.95
+    },
+    {
+      "i": 48,
+      "text": "a",
+      "start": 21.81,
+      "end": 22.13,
+      "prob": 0.95
+    },
+    {
+      "i": 49,
+      "text": "single",
+      "start": 22.23,
+      "end": 22.55,
+      "prob": 0.95
+    },
+    {
+      "i": 50,
+      "text": "evening,",
+      "start": 22.65,
+      "end": 22.97,
+      "prob": 0.95
+    },
+    {
+      "i": 51,
+      "text": "your",
+      "start": 23.07,
+      "end": 23.39,
+      "prob": 0.95
+    },
+    {
+      "i": 52,
+      "text": "motivation",
+      "start": 23.49,
+      "end": 23.81,
+      "prob": 0.95
+    },
+    {
+      "i": 53,
+      "text": "is",
+      "start": 23.91,
+      "end": 24.23,
+      "prob": 0.95
+    },
+    {
+      "i": 54,
+      "text": "running",
+      "start": 24.33,
+      "end": 24.65,
+      "prob": 0.95
+    },
+    {
+      "i": 55,
+      "text": "on",
+      "start": 24.75,
+      "end": 25.07,
+      "prob": 0.95
+    },
+    {
+      "i": 56,
+      "text": "credit.",
+      "start": 25.17,
+      "end": 25.49,
+      "prob": 0.95
+    },
+    {
+      "i": 57,
+      "text": "So",
+      "start": 26.14,
+      "end": 26.46,
+      "prob": 0.95
+    },
+    {
+      "i": 58,
+      "text": "the",
+      "start": 26.56,
+      "end": 26.88,
+      "prob": 0.95
+    },
+    {
+      "i": 59,
+      "text": "fix",
+      "start": 26.98,
+      "end": 27.3,
+      "prob": 0.95
+    },
+    {
+      "i": 60,
+      "text": "is",
+      "start": 27.4,
+      "end": 27.72,
+      "prob": 0.95
+    },
+    {
+      "i": 61,
+      "text": "embarrassingly",
+      "start": 27.82,
+      "end": 28.14,
+      "prob": 0.95
+    },
+    {
+      "i": 62,
+      "text": "simple,",
+      "start": 28.24,
+      "end": 28.56,
+      "prob": 0.95
+    },
+    {
+      "i": 63,
+      "text": "you",
+      "start": 28.66,
+      "end": 28.98,
+      "prob": 0.95
+    },
+    {
+      "i": 64,
+      "text": "shrink",
+      "start": 29.08,
+      "end": 29.4,
+      "prob": 0.95
+    },
+    {
+      "i": 65,
+      "text": "the",
+      "start": 29.5,
+      "end": 29.82,
+      "prob": 0.95
+    },
+    {
+      "i": 66,
+      "text": "loop",
+      "start": 29.92,
+      "end": 30.24,
+      "prob": 0.95
+    },
+    {
+      "i": 67,
+      "text": "until",
+      "start": 30.34,
+      "end": 30.66,
+      "prob": 0.95
+    },
+    {
+      "i": 68,
+      "text": "it",
+      "start": 30.76,
+      "end": 31.08,
+      "prob": 0.95
+    },
+    {
+      "i": 69,
+      "text": "fits",
+      "start": 31.18,
+      "end": 31.5,
+      "prob": 0.95
+    },
+    {
+      "i": 70,
+      "text": "one",
+      "start": 31.6,
+      "end": 31.92,
+      "prob": 0.95
+    },
+    {
+      "i": 71,
+      "text": "sitting.",
+      "start": 32.02,
+      "end": 32.34,
+      "prob": 0.95
+    },
+    {
+      "i": 72,
+      "text": "I",
+      "start": 32.99,
+      "end": 33.31,
+      "prob": 0.95
+    },
+    {
+      "i": 73,
+      "text": "tell",
+      "start": 33.41,
+      "end": 33.73,
+      "prob": 0.95
+    },
+    {
+      "i": 74,
+      "text": "people",
+      "start": 33.83,
+      "end": 34.15,
+      "prob": 0.95
+    },
+    {
+      "i": 75,
+      "text": "to",
+      "start": 34.25,
+      "end": 34.57,
+      "prob": 0.95
+    },
+    {
+      "i": 76,
+      "text": "ship",
+      "start": 34.67,
+      "end": 34.99,
+      "prob": 0.95
+    },
+    {
+      "i": 77,
+      "text": "something",
+      "start": 35.09,
+      "end": 35.41,
+      "prob": 0.95
+    },
+    {
+      "i": 78,
+      "text": "ugly",
+      "start": 35.51,
+      "end": 35.83,
+      "prob": 0.95
+    },
+    {
+      "i": 79,
+      "text": "on",
+      "start": 35.93,
+      "end": 36.25,
+      "prob": 0.95
+    },
+    {
+      "i": 80,
+      "text": "day",
+      "start": 36.35,
+      "end": 36.67,
+      "prob": 0.95
+    },
+    {
+      "i": 81,
+      "text": "one,",
+      "start": 36.77,
+      "end": 37.09,
+      "prob": 0.95
+    },
+    {
+      "i": 82,
+      "text": "then",
+      "start": 37.19,
+      "end": 37.51,
+      "prob": 0.95
+    },
+    {
+      "i": 83,
+      "text": "improve",
+      "start": 37.61,
+      "end": 37.93,
+      "prob": 0.95
+    },
+    {
+      "i": 84,
+      "text": "it",
+      "start": 38.03,
+      "end": 38.35,
+      "prob": 0.95
+    },
+    {
+      "i": 85,
+      "text": "every",
+      "start": 38.45,
+      "end": 38.77,
+      "prob": 0.95
+    },
+    {
+      "i": 86,
+      "text": "day",
+      "start": 38.87,
+      "end": 39.19,
+      "prob": 0.95
+    },
+    {
+      "i": 87,
+      "text": "after.",
+      "start": 39.29,
+      "end": 39.61,
+      "prob": 0.95
+    },
+    {
+      "i": 88,
+      "text": "The",
+      "start": 40.26,
+      "end": 40.58,
+      "prob": 0.95
+    },
+    {
+      "i": 89,
+      "text": "second",
+      "start": 40.68,
+      "end": 41.0,
+      "prob": 0.95
+    },
+    {
+      "i": 90,
+      "text": "killer",
+      "start": 41.1,
+      "end": 41.42,
+      "prob": 0.95
+    },
+    {
+      "i": 91,
+      "text": "is",
+      "start": 41.52,
+      "end": 41.84,
+      "prob": 0.95
+    },
+    {
+      "i": 92,
+      "text": "starting",
+      "start": 41.94,
+      "end": 42.26,
+      "prob": 0.95
+    },
+    {
+      "i": 93,
+      "text": "with",
+      "start": 42.36,
+      "end": 42.68,
+      "prob": 0.95
+    },
+    {
+      "i": 94,
+      "text": "the",
+      "start": 42.78,
+      "end": 43.1,
+      "prob": 0.95
+    },
+    {
+      "i": 95,
+      "text": "hardest",
+      "start": 43.2,
+      "end": 43.52,
+      "prob": 0.95
+    },
+    {
+      "i": 96,
+      "text": "part",
+      "start": 43.62,
+      "end": 43.94,
+      "prob": 0.95
+    },
+    {
+      "i": 97,
+      "text": "because",
+      "start": 44.04,
+      "end": 44.36,
+      "prob": 0.95
+    },
+    {
+      "i": 98,
+      "text": "it",
+      "start": 44.46,
+      "end": 44.78,
+      "prob": 0.95
+    },
+    {
+      "i": 99,
+      "text": "feels",
+      "start": 44.88,
+      "end": 45.2,
+      "prob": 0.95
+    },
+    {
+      "i": 100,
+      "text": "most",
+      "start": 45.3,
+      "end": 45.62,
+      "prob": 0.95
+    },
+    {
+      "i": 101,
+      "text": "impressive.",
+      "start": 45.72,
+      "end": 46.04,
+      "prob": 0.95
+    },
+    {
+      "i": 102,
+      "text": "You",
+      "start": 46.69,
+      "end": 47.01,
+      "prob": 0.95
+    },
+    {
+      "i": 103,
+      "text": "should",
+      "start": 47.11,
+      "end": 47.43,
+      "prob": 0.95
+    },
+    {
+      "i": 104,
+      "text": "start",
+      "start": 47.53,
+      "end": 47.85,
+      "prob": 0.95
+    },
+    {
+      "i": 105,
+      "text": "with",
+      "start": 47.95,
+      "end": 48.27,
+      "prob": 0.95
+    },
+    {
+      "i": 106,
+      "text": "the",
+      "start": 48.37,
+      "end": 48.69,
+      "prob": 0.95
+    },
+    {
+      "i": 107,
+      "text": "boring",
+      "start": 48.79,
+      "end": 49.11,
+      "prob": 0.95
+    },
+    {
+      "i": 108,
+      "text": "part",
+      "start": 49.21,
+      "end": 49.53,
+      "prob": 0.95
+    },
+    {
+      "i": 109,
+      "text": "that",
+      "start": 49.63,
+      "end": 49.95,
+      "prob": 0.95
+    },
+    {
+      "i": 110,
+      "text": "proves",
+      "start": 50.05,
+      "end": 50.37,
+      "prob": 0.95
+    },
+    {
+      "i": 111,
+      "text": "the",
+      "start": 50.47,
+      "end": 50.79,
+      "prob": 0.95
+    },
+    {
+      "i": 112,
+      "text": "whole",
+      "start": 50.89,
+      "end": 51.21,
+      "prob": 0.95
+    },
+    {
+      "i": 113,
+      "text": "thing",
+      "start": 51.31,
+      "end": 51.63,
+      "prob": 0.95
+    },
+    {
+      "i": 114,
+      "text": "can",
+      "start": 51.73,
+      "end": 52.05,
+      "prob": 0.95
+    },
+    {
+      "i": 115,
+      "text": "work",
+      "start": 52.15,
+      "end": 52.47,
+      "prob": 0.95
+    },
+    {
+      "i": 116,
+      "text": "at",
+      "start": 52.57,
+      "end": 52.89,
+      "prob": 0.95
+    },
+    {
+      "i": 117,
+      "text": "all.",
+      "start": 52.99,
+      "end": 53.31,
+      "prob": 0.95
+    },
+    {
+      "i": 118,
+      "text": "There",
+      "start": 53.96,
+      "end": 54.28,
+      "prob": 0.95
+    },
+    {
+      "i": 119,
+      "text": "is",
+      "start": 54.38,
+      "end": 54.7,
+      "prob": 0.95
+    },
+    {
+      "i": 120,
+      "text": "a",
+      "start": 54.8,
+      "end": 55.12,
+      "prob": 0.95
+    },
+    {
+      "i": 121,
+      "text": "myth",
+      "start": 55.22,
+      "end": 55.54,
+      "prob": 0.95
+    },
+    {
+      "i": 122,
+      "text": "that",
+      "start": 55.64,
+      "end": 55.96,
+      "prob": 0.95
+    },
+    {
+      "i": 123,
+      "text": "discipline",
+      "start": 56.06,
+      "end": 56.38,
+      "prob": 0.95
+    },
+    {
+      "i": 124,
+      "text": "is",
+      "start": 56.48,
+      "end": 56.8,
+      "prob": 0.95
+    },
+    {
+      "i": 125,
+      "text": "what",
+      "start": 56.9,
+      "end": 57.22,
+      "prob": 0.95
+    },
+    {
+      "i": 126,
+      "text": "separates",
+      "start": 57.32,
+      "end": 57.64,
+      "prob": 0.95
+    },
+    {
+      "i": 127,
+      "text": "finishers",
+      "start": 57.74,
+      "end": 58.06,
+      "prob": 0.95
+    },
+    {
+      "i": 128,
+      "text": "from",
+      "start": 58.16,
+      "end": 58.48,
+      "prob": 0.95
+    },
+    {
+      "i": 129,
+      "text": "starters.",
+      "start": 58.58,
+      "end": 58.9,
+      "prob": 0.95
+    },
+    {
+      "i": 130,
+      "text": "In",
+      "start": 59.55,
+      "end": 59.87,
+      "prob": 0.95
+    },
+    {
+      "i": 131,
+      "text": "practice",
+      "start": 59.97,
+      "end": 60.29,
+      "prob": 0.95
+    },
+    {
+      "i": 132,
+      "text": "it",
+      "start": 60.39,
+      "end": 60.71,
+      "prob": 0.95
+    },
+    {
+      "i": 133,
+      "text": "is",
+      "start": 60.81,
+      "end": 61.13,
+      "prob": 0.95
+    },
+    {
+      "i": 134,
+      "text": "scope,",
+      "start": 61.23,
+      "end": 61.55,
+      "prob": 0.95
+    },
+    {
+      "i": 135,
+      "text": "finishers",
+      "start": 61.65,
+      "end": 61.97,
+      "prob": 0.95
+    },
+    {
+      "i": 136,
+      "text": "simply",
+      "start": 62.07,
+      "end": 62.39,
+      "prob": 0.95
+    },
+    {
+      "i": 137,
+      "text": "choose",
+      "start": 62.49,
+      "end": 62.81,
+      "prob": 0.95
+    },
+    {
+      "i": 138,
+      "text": "smaller",
+      "start": 62.91,
+      "end": 63.23,
+      "prob": 0.95
+    },
+    {
+      "i": 139,
+      "text": "things",
+      "start": 63.33,
+      "end": 63.65,
+      "prob": 0.95
+    },
+    {
+      "i": 140,
+      "text": "and",
+      "start": 63.75,
+      "end": 64.07,
+      "prob": 0.95
+    },
+    {
+      "i": 141,
+      "text": "then",
+      "start": 64.17,
+      "end": 64.49,
+      "prob": 0.95
+    },
+    {
+      "i": 142,
+      "text": "expand",
+      "start": 64.59,
+      "end": 64.91,
+      "prob": 0.95
+    },
+    {
+      "i": 143,
+      "text": "them.",
+      "start": 65.01,
+      "end": 65.33,
+      "prob": 0.95
+    },
+    {
+      "i": 144,
+      "text": "My",
+      "start": 65.98,
+      "end": 66.3,
+      "prob": 0.95
+    },
+    {
+      "i": 145,
+      "text": "rule",
+      "start": 66.4,
+      "end": 66.72,
+      "prob": 0.95
+    },
+    {
+      "i": 146,
+      "text": "now",
+      "start": 66.82,
+      "end": 67.14,
+      "prob": 0.95
+    },
+    {
+      "i": 147,
+      "text": "is",
+      "start": 67.24,
+      "end": 67.56,
+      "prob": 0.95
+    },
+    {
+      "i": 148,
+      "text": "that",
+      "start": 67.66,
+      "end": 67.98,
+      "prob": 0.95
+    },
+    {
+      "i": 149,
+      "text": "version",
+      "start": 68.08,
+      "end": 68.4,
+      "prob": 0.95
+    },
+    {
+      "i": 150,
+      "text": "one",
+      "start": 68.5,
+      "end": 68.82,
+      "prob": 0.95
+    },
+    {
+      "i": 151,
+      "text": "has",
+      "start": 68.92,
+      "end": 69.24,
+      "prob": 0.95
+    },
+    {
+      "i": 152,
+      "text": "to",
+      "start": 69.34,
+      "end": 69.66,
+      "prob": 0.95
+    },
+    {
+      "i": 153,
+      "text": "run",
+      "start": 69.76,
+      "end": 70.08,
+      "prob": 0.95
+    },
+    {
+      "i": 154,
+      "text": "end",
+      "start": 70.18,
+      "end": 70.5,
+      "prob": 0.95
+    },
+    {
+      "i": 155,
+      "text": "to",
+      "start": 70.6,
+      "end": 70.92,
+      "prob": 0.95
+    },
+    {
+      "i": 156,
+      "text": "end",
+      "start": 71.02,
+      "end": 71.34,
+      "prob": 0.95
+    },
+    {
+      "i": 157,
+      "text": "in",
+      "start": 71.44,
+      "end": 71.76,
+      "prob": 0.95
+    },
+    {
+      "i": 158,
+      "text": "under",
+      "start": 71.86,
+      "end": 72.18,
+      "prob": 0.95
+    },
+    {
+      "i": 159,
+      "text": "a",
+      "start": 72.28,
+      "end": 72.6,
+      "prob": 0.95
+    },
+    {
+      "i": 160,
+      "text": "week.",
+      "start": 72.7,
+      "end": 73.02,
+      "prob": 0.95
+    },
+    {
+      "i": 161,
+      "text": "Everything",
+      "start": 73.67,
+      "end": 73.99,
+      "prob": 0.95
+    },
+    {
+      "i": 162,
+      "text": "else,",
+      "start": 74.09,
+      "end": 74.41,
+      "prob": 0.95
+    },
+    {
+      "i": 163,
+      "text": "all",
+      "start": 74.51,
+      "end": 74.83,
+      "prob": 0.95
+    },
+    {
+      "i": 164,
+      "text": "the",
+      "start": 74.93,
+      "end": 75.25,
+      "prob": 0.95
+    },
+    {
+      "i": 165,
+      "text": "polish",
+      "start": 75.35,
+      "end": 75.67,
+      "prob": 0.95
+    },
+    {
+      "i": 166,
+      "text": "and",
+      "start": 75.77,
+      "end": 76.09,
+      "prob": 0.95
+    },
+    {
+      "i": 167,
+      "text": "the",
+      "start": 76.19,
+      "end": 76.51,
+      "prob": 0.95
+    },
+    {
+      "i": 168,
+      "text": "features,",
+      "start": 76.61,
+      "end": 76.93,
+      "prob": 0.95
+    },
+    {
+      "i": 169,
+      "text": "comes",
+      "start": 77.03,
+      "end": 77.35,
+      "prob": 0.95
+    },
+    {
+      "i": 170,
+      "text": "after",
+      "start": 77.45,
+      "end": 77.77,
+      "prob": 0.95
+    },
+    {
+      "i": 171,
+      "text": "it",
+      "start": 77.87,
+      "end": 78.19,
+      "prob": 0.95
+    },
+    {
+      "i": 172,
+      "text": "already",
+      "start": 78.29,
+      "end": 78.61,
+      "prob": 0.95
+    },
+    {
+      "i": 173,
+      "text": "works.",
+      "start": 78.71,
+      "end": 79.03,
+      "prob": 0.95
+    },
+    {
+      "i": 174,
+      "text": "The",
+      "start": 79.68,
+      "end": 80.0,
+      "prob": 0.95
+    },
+    {
+      "i": 175,
+      "text": "last",
+      "start": 80.1,
+      "end": 80.42,
+      "prob": 0.95
+    },
+    {
+      "i": 176,
+      "text": "trap",
+      "start": 80.52,
+      "end": 80.84,
+      "prob": 0.95
+    },
+    {
+      "i": 177,
+      "text": "is",
+      "start": 80.94,
+      "end": 81.26,
+      "prob": 0.95
+    },
+    {
+      "i": 178,
+      "text": "telling",
+      "start": 81.36,
+      "end": 81.68,
+      "prob": 0.95
+    },
+    {
+      "i": 179,
+      "text": "everyone",
+      "start": 81.78,
+      "end": 82.1,
+      "prob": 0.95
+    },
+    {
+      "i": 180,
+      "text": "about",
+      "start": 82.2,
+      "end": 82.52,
+      "prob": 0.95
+    },
+    {
+      "i": 181,
+      "text": "the",
+      "start": 82.62,
+      "end": 82.94,
+      "prob": 0.95
+    },
+    {
+      "i": 182,
+      "text": "idea",
+      "start": 83.04,
+      "end": 83.36,
+      "prob": 0.95
+    },
+    {
+      "i": 183,
+      "text": "before",
+      "start": 83.46,
+      "end": 83.78,
+      "prob": 0.95
+    },
+    {
+      "i": 184,
+      "text": "you",
+      "start": 83.88,
+      "end": 84.2,
+      "prob": 0.95
+    },
+    {
+      "i": 185,
+      "text": "have",
+      "start": 84.3,
+      "end": 84.62,
+      "prob": 0.95
+    },
+    {
+      "i": 186,
+      "text": "built",
+      "start": 84.72,
+      "end": 85.04,
+      "prob": 0.95
+    },
+    {
+      "i": 187,
+      "text": "anything.",
+      "start": 85.14,
+      "end": 85.46,
+      "prob": 0.95
+    },
+    {
+      "i": 188,
+      "text": "You",
+      "start": 86.11,
+      "end": 86.43,
+      "prob": 0.95
+    },
+    {
+      "i": 189,
+      "text": "get",
+      "start": 86.53,
+      "end": 86.85,
+      "prob": 0.95
+    },
+    {
+      "i": 190,
+      "text": "the",
+      "start": 86.95,
+      "end": 87.27,
+      "prob": 0.95
+    },
+    {
+      "i": 191,
+      "text": "social",
+      "start": 87.37,
+      "end": 87.69,
+      "prob": 0.95
+    },
+    {
+      "i": 192,
+      "text": "reward",
+      "start": 87.79,
+      "end": 88.11,
+      "prob": 0.95
+    },
+    {
+      "i": 193,
+      "text": "immediately,",
+      "start": 88.21,
+      "end": 88.53,
+      "prob": 0.95
+    },
+    {
+      "i": 194,
+      "text": "and",
+      "start": 88.63,
+      "end": 88.95,
+      "prob": 0.95
+    },
+    {
+      "i": 195,
+      "text": "your",
+      "start": 89.05,
+      "end": 89.37,
+      "prob": 0.95
+    },
+    {
+      "i": 196,
+      "text": "brain",
+      "start": 89.47,
+      "end": 89.79,
+      "prob": 0.95
+    },
+    {
+      "i": 197,
+      "text": "treats",
+      "start": 89.89,
+      "end": 90.21,
+      "prob": 0.95
+    },
+    {
+      "i": 198,
+      "text": "the",
+      "start": 90.31,
+      "end": 90.63,
+      "prob": 0.95
+    },
+    {
+      "i": 199,
+      "text": "project",
+      "start": 90.73,
+      "end": 91.05,
+      "prob": 0.95
+    },
+    {
+      "i": 200,
+      "text": "as",
+      "start": 91.15,
+      "end": 91.47,
+      "prob": 0.95
+    },
+    {
+      "i": 201,
+      "text": "done.",
+      "start": 91.57,
+      "end": 91.89,
+      "prob": 0.95
+    },
+    {
+      "i": 202,
+      "text": "So",
+      "start": 92.54,
+      "end": 92.86,
+      "prob": 0.95
+    },
+    {
+      "i": 203,
+      "text": "build",
+      "start": 92.96,
+      "end": 93.28,
+      "prob": 0.95
+    },
+    {
+      "i": 204,
+      "text": "first,",
+      "start": 93.38,
+      "end": 93.7,
+      "prob": 0.95
+    },
+    {
+      "i": 205,
+      "text": "talk",
+      "start": 93.8,
+      "end": 94.12,
+      "prob": 0.95
+    },
+    {
+      "i": 206,
+      "text": "later,",
+      "start": 94.22,
+      "end": 94.54,
+      "prob": 0.95
+    },
+    {
+      "i": 207,
+      "text": "and",
+      "start": 94.64,
+      "end": 94.96,
+      "prob": 0.95
+    },
+    {
+      "i": 208,
+      "text": "let",
+      "start": 95.06,
+      "end": 95.38,
+      "prob": 0.95
+    },
+    {
+      "i": 209,
+      "text": "the",
+      "start": 95.48,
+      "end": 95.8,
+      "prob": 0.95
+    },
+    {
+      "i": 210,
+      "text": "working",
+      "start": 95.9,
+      "end": 96.22,
+      "prob": 0.95
+    },
+    {
+      "i": 211,
+      "text": "thing",
+      "start": 96.32,
+      "end": 96.64,
+      "prob": 0.95
+    },
+    {
+      "i": 212,
+      "text": "do",
+      "start": 96.74,
+      "end": 97.06,
+      "prob": 0.95
+    },
+    {
+      "i": 213,
+      "text": "the",
+      "start": 97.16,
+      "end": 97.48,
+      "prob": 0.95
+    },
+    {
+      "i": 214,
+      "text": "talking",
+      "start": 97.58,
+      "end": 97.9,
+      "prob": 0.95
+    },
+    {
+      "i": 215,
+      "text": "for",
+      "start": 98.0,
+      "end": 98.32,
+      "prob": 0.95
+    },
+    {
+      "i": 216,
+      "text": "you.",
+      "start": 98.42,
+      "end": 98.74,
+      "prob": 0.95
+    }
+  ],
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 4.94,
+      "text": "Welcome back to the show, today we are talking about side projects.",
+      "first_word": 0,
+      "last_word": 11
+    },
+    {
+      "start": 5.59,
+      "end": 11.79,
+      "text": "Most people quit in the first three weeks, and it is almost never about talent.",
+      "first_word": 12,
+      "last_word": 26
+    },
+    {
+      "start": 12.44,
+      "end": 18.64,
+      "text": "The real reason is that they pick a project whose feedback loop is too slow.",
+      "first_word": 27,
+      "last_word": 41
+    },
+    {
+      "start": 19.29,
+      "end": 25.49,
+      "text": "If you cannot see progress in a single evening, your motivation is running on credit.",
+      "first_word": 42,
+      "last_word": 56
+    },
+    {
+      "start": 26.14,
+      "end": 32.34,
+      "text": "So the fix is embarrassingly simple, you shrink the loop until it fits one sitting.",
+      "first_word": 57,
+      "last_word": 71
+    },
+    {
+      "start": 32.99,
+      "end": 39.61,
+      "text": "I tell people to ship something ugly on day one, then improve it every day after.",
+      "first_word": 72,
+      "last_word": 87
+    },
+    {
+      "start": 40.26,
+      "end": 46.04,
+      "text": "The second killer is starting with the hardest part because it feels most impressive.",
+      "first_word": 88,
+      "last_word": 101
+    },
+    {
+      "start": 46.69,
+      "end": 53.31,
+      "text": "You should start with the boring part that proves the whole thing can work at all.",
+      "first_word": 102,
+      "last_word": 117
+    },
+    {
+      "start": 53.96,
+      "end": 58.9,
+      "text": "There is a myth that discipline is what separates finishers from starters.",
+      "first_word": 118,
+      "last_word": 129
+    },
+    {
+      "start": 59.55,
+      "end": 65.33,
+      "text": "In practice it is scope, finishers simply choose smaller things and then expand them.",
+      "first_word": 130,
+      "last_word": 143
+    },
+    {
+      "start": 65.98,
+      "end": 73.02,
+      "text": "My rule now is that version one has to run end to end in under a week.",
+      "first_word": 144,
+      "last_word": 160
+    },
+    {
+      "start": 73.67,
+      "end": 79.03,
+      "text": "Everything else, all the polish and the features, comes after it already works.",
+      "first_word": 161,
+      "last_word": 173
+    },
+    {
+      "start": 79.68,
+      "end": 85.46,
+      "text": "The last trap is telling everyone about the idea before you have built anything.",
+      "first_word": 174,
+      "last_word": 187
+    },
+    {
+      "start": 86.11,
+      "end": 91.89,
+      "text": "You get the social reward immediately, and your brain treats the project as done.",
+      "first_word": 188,
+      "last_word": 201
+    },
+    {
+      "start": 92.54,
+      "end": 98.74,
+      "text": "So build first, talk later, and let the working thing do the talking for you.",
+      "first_word": 202,
+      "last_word": 216
+    }
+  ],
+  "duration": 101.39
+}

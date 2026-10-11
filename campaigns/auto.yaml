@@ -1,0 +1,10 @@
+# Any creator: the credit and the creator's hashtag come from the video itself
+# (the channel's @handle and #channelname). Use a named campaign when a creator
+# needs something specific (vocabulary, music, extra hashtags).
+name: Any creator (auto)
+credit: { enabled: true, handle: auto, position: below_headline }
+clip_length: { min: 20, max: 60 }
+required_hashtags: [auto]
+headline: { enabled: true }
+music: { allowed: false }
+captions: { accent_color: "#FFE500", uppercase: false }

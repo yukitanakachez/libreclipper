@@ -1,0 +1,15 @@
+# Copy to config.yaml and edit. Every key is optional.
+
+# The AI provider, its key and its model are chosen in the app: Settings (the gear).
+jobs_dir: jobs
+retention_days: 7             # delete proxies/sections this long after rendering
+max_height: 2160              # cap for the high-quality section download
+# clips_dir: ~/Movies/Clipper # finished clips go here instead of each job's out/ folder
+
+# whisper:
+#   backend: mlx              # chosen for you: mlx on Apple Silicon, faster_whisper elsewhere
+
+youtube:
+  # Leave unset. Only set this if YouTube starts demanding a sign-in, and then
+  # only for a SECONDARY Google account, never your main one.
+  # cookies_from_browser: chrome

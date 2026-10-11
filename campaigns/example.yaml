@@ -1,0 +1,9 @@
+name: Example Podcast
+credit: { enabled: true, handle: "@examplepod", position: below_headline }
+clip_length: { min: 20, max: 60 }
+required_hashtags: ["#examplepod"]
+vocabulary: ["Jane Doe", "Example Podcast", "Acme"]
+headline: { enabled: true }
+music: { allowed: true, folder: music/example-podcast, volume_db: -22 }
+captions: { accent_color: "#FFE500", uppercase: false }
+pacing: { cut_pauses: true, max_pause: 0.3, speed: 1.1 }

@@ -1,0 +1,19 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Caption,Montserrat Black,96,&H00FFFFFF,&H00FFFFFF,&H00000000,&H64000000,0,0,0,0,100,100,0,0,1,7,3,5,80,80,0,1
+Style: Headline,Montserrat Black,64,&H00FFFFFF,&H00FFFFFF,&H00000000,&HC8000000,0,0,0,0,100,100,0,0,3,14,0,5,120,120,0,1
+Style: Credit,Montserrat Black,40,&H00FFFFFF,&H00FFFFFF,&H00000000,&H64000000,0,0,0,0,100,100,0,0,1,4,2,5,120,120,0,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:01.50,Headline,,0,0,0,,{\pos(540,249)}Big Claim
+Dialogue: 0,0:00:00.00,0:00:00.35,Caption,,0,0,0,,{\pos(540,1305)\fscx108\fscy108\t(0,80,\fscx100\fscy100)}{\c&H0000E5FF}This{\c&H00FFFFFF&} changed
+Dialogue: 0,0:00:00.35,0:00:00.85,Caption,,0,0,0,,{\pos(540,1305)}This {\c&H0000E5FF}changed{\c&H00FFFFFF&}
+Dialogue: 0,0:00:00.85,0:00:01.50,Caption,,0,0,0,,{\pos(540,1305)\fscx108\fscy108\t(0,80,\fscx100\fscy100)}{\c&H0000E5FF}everything.{\c&H00FFFFFF&}
