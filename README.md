@@ -3,15 +3,15 @@
 An open-source podcast-to-shorts clipper that runs on your own computer. The app and its
 command are called Clipper for short.
 
-It turns a podcast into vertical clips for TikTok and YouTube Shorts: a YouTube link (or a
-local file) goes in, and 1080×1920 MP4s come out with the crop following whoever is
+It turns a podcast into vertical clips for TikTok and YouTube Shorts: a video file goes in,
+and 1080×1920 MP4s come out with the crop following whoever is
 talking, word-by-word captions burned in, an optional headline, a creator credit and
 optional background music.
 
 You review the candidate moments before anything renders. Nothing is ever posted for you.
 
 ```
-link ──► fetch ──► transcribe ──► pick ──► reframe ──► [ you review ]  ──► render ──► MP4s
+file ──► fetch ──► transcribe ──► pick ──► reframe ──► [ you review ]  ──► render ──► MP4s
         (720p     (Whisper,     (Claude   (faces +                        (captions,
          proxy)    on your Mac)  picks)    speaker)                        music, encode)
 ```
@@ -56,7 +56,7 @@ If something looks wrong, `.venv/bin/clipper doctor` lists every check with its 
 ### Optional settings
 
 Clipper needs no configuration file. To change where jobs and finished clips are kept, how
-long working files stay, or to let yt-dlp borrow a browser's cookies, copy
+long working files stay, copy
 `config.yaml.example` to `config.yaml` and edit it; every key is optional.
 
 To use your own ffmpeg instead of the downloaded one, set `CLIPPER_FFMPEG` (it must be built
@@ -72,7 +72,7 @@ is why `./start` brings its own uv and Python rather than trusting the ones on y
 ## Using it
 
 ```bash
-.venv/bin/clipper run "https://youtu.be/VIDEO_ID" --campaign example
+.venv/bin/clipper run ~/Downloads/episode-12.mov --campaign auto
 .venv/bin/clipper preview <job-id>          # optional: check the crop before rendering
 .venv/bin/clipper approve <job-id> 1 3
 .venv/bin/clipper render <job-id>
@@ -83,11 +83,8 @@ is why `./start` brings its own uv and Python rather than trusting the ones on y
 `jobs/<job-id>/out/` as `01-<headline>.mp4` with a matching `.txt` holding the post
 caption and hashtags.
 
-A local file works the same way, and skips the download entirely:
-
-```bash
-.venv/bin/clipper run ~/Downloads/episode-12.mov --campaign example
-```
+Clipper works from video files on your computer. It does not download videos: give it a
+link and it will ask for the file instead.
 
 Other commands: `clipper clean` deletes working files from jobs older than
 `retention_days` (finished clips are never deleted), and `clipper doctor` re-runs setup
@@ -124,7 +121,10 @@ you (↵ opens it), with tiles for what's working, how many moments are waiting 
 many rendered clips you haven't posted yet. The bell in the top bar is an Inbox: jobs ready for
 review, finished renders and failures.
 
-**New** (N) starts a job: a YouTube link, a file path or **Choose file…**, and a campaign.
+**New** (N) starts a job: drop a video onto the big drop area, or click it to pick one in
+Finder, then choose a campaign. A video you pick in Finder is read where it is. A dropped
+video is copied into `jobs/uploads/` (a browser never says where a dropped file lives), and
+that copy is deleted with the job's other working files after `retention_days`.
 
 **A job.** Its moments are listed on the left, best score first. The source video plays in the
 iPhone frame. For the selected moment you can:
@@ -186,8 +186,8 @@ short breath, then the clip plays at `speed` (pitch preserved). Both are on by d
 `cut_pauses: false` and `speed: 1.0` for campaigns that forbid altering the creator's audio.
 `clip_length` limits apply to the finished clip, after cuts and speed-up.
 
-To re-pick moments on a job you already downloaded and transcribed (after changing the
-prompt or campaign, say): `clipper run <link> --campaign <slug> --from pick`.
+To re-pick moments on a job you already transcribed (after changing the prompt or campaign,
+say): `clipper run <file> --campaign <slug> --from pick`.
 
 ## How a job is stored
 
@@ -244,7 +244,7 @@ knobs to turn if it does not hold up.
   is GPL-licensed and is a separate program, not part of Clipper.
 - Speech-to-text is [Whisper](https://github.com/openai/whisper) through mlx-whisper or
   faster-whisper; faces are found with Google's [MediaPipe](https://developers.google.com/mediapipe)
-  face landmarker; downloads use [yt-dlp](https://github.com/yt-dlp/yt-dlp).
+  face landmarker.
 - The provider marks on the Settings page come from [Simple Icons](https://simpleicons.org)
   (CC0). The names and logos belong to their owners and are shown only to identify each
   service; Clipper is not affiliated with or endorsed by any of them.
@@ -256,6 +256,5 @@ MIT: see [LICENSE](LICENSE). Security notes are in [SECURITY.md](SECURITY.md), a
 
 ## Legal note
 
-Clips are for creators who have given permission. Note that downloading from YouTube is
-against YouTube's Terms of Service regardless of that permission, which is why local-file
-input exists: when a campaign gives you the source file, use it.
+Clip only videos you own or have the creator's permission to clip. Clipper does not download
+videos from YouTube or anywhere else: you bring the file.

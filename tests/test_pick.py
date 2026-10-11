@@ -8,7 +8,7 @@ from clipper.config import AppConfig
 from clipper.models import Meta, Segment, Transcript, Word
 
 CAMPAIGN = Campaign(name="P", slug="p", min_len=20, max_len=60)
-META = Meta(job_id="j", source_kind="youtube", source="u", title="T", description="",
+META = Meta(job_id="j", source_kind="local", source="u", title="T", description="",
             channel="C", duration=120.0, width=1280, height=720, fps=30.0, max_height=2160)
 
 

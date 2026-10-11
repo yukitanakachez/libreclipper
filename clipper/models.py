@@ -2,7 +2,7 @@
 
 All of them serialize to plain JSON so each step's output can be read on disk.
 Crop coordinates are normalized (0-1) against the source frame, so a plan built
-from the 720p proxy applies unchanged to a 4K section.
+from the 720p proxy applies unchanged to the full-size original.
 """
 
 from __future__ import annotations
@@ -67,7 +67,7 @@ class Transcript:
 @dataclass
 class Meta:
     job_id: str
-    source_kind: str          # "youtube" | "local"
+    source_kind: str          # "local"; "youtube" only in jobs made before links were removed
     source: str               # URL, or absolute path for local files
     title: str
     description: str
@@ -77,7 +77,7 @@ class Meta:
     height: int
     fps: float
     max_height: int           # best height available from the source
-    channel_handle: str = ""  # the creator's @handle (YouTube uploader_id); "" when unknown
+    channel_handle: str = ""  # the creator's @handle; "" when unknown (always, for a file)
 
     def to_dict(self) -> dict:
         return asdict(self)

@@ -12,7 +12,7 @@ import os
 import re
 from pathlib import Path
 
-from clipper import align, captions, fetch, jobs, pacing, shell
+from clipper import captions, fetch, jobs, pacing, shell
 from clipper.campaigns import Campaign, music_tracks
 from clipper.config import AppConfig
 from clipper.jobs import JobPaths
@@ -253,16 +253,6 @@ def write_sidecar(path: Path, candidate: Candidate) -> Path:
     return path
 
 
-def section_path(paths: JobPaths, candidate: Candidate) -> Path:
-    """Where a candidate's high-quality download lives, keyed by its time range.
-
-    Keyed by range, not candidate number: re-picking renumbers candidates, and
-    yt-dlp skips files that already exist, so a number-keyed file would quietly
-    serve an old candidate's footage.
-    """
-    return paths.sections / f"{candidate.start:.2f}-{candidate.end:.2f}.mp4"
-
-
 def _slug(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")[:40] or "clip"
 
@@ -301,17 +291,9 @@ def render_clip(
     transcript: Transcript,
     cfg: AppConfig,
 ) -> Path:
-    section = fetch.download_section(
-        meta, candidate.start, candidate.end, section_path(paths, candidate), cfg,
-    )
+    section = fetch.source_file(meta, paths)
     src_w, src_h, src_fps = fetch.probe_video(section)
-
-    if meta.source_kind == "local":
-        offset = 0.0
-    else:
-        offset, _ = align.measure_offset(
-            section, paths.proxy, max(0.0, candidate.start - 5.0)
-        )
+    offset = 0.0                    # the working copy and the file it was made from share a clock
 
     clip_start = candidate.start - offset
     clip_end = candidate.end - offset
@@ -326,7 +308,7 @@ def render_clip(
          if w.end > candidate.start and w.start < candidate.end],
         fixes,
     )
-    # Pacing works in clip-relative time, so the section offset cancels out.
+    # Pacing works in clip-relative time, so the offset cancels out.
     keep = pacing.keep_intervals(words, candidate.start, candidate.end,
                                  campaign.pacing, fps=src_fps)
     time_map = pacing.TimeMap(keep)

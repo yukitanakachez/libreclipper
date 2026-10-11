@@ -3,7 +3,7 @@ import type {
 } from "./types";
 
 export const job = (over: Partial<JobSummary> = {}): JobSummary => ({
-  id: "vid1", title: "Episode 1", source: "https://youtu.be/vid1", campaign: "pod",
+  id: "vid1", title: "Episode 1", source: "/videos/vid1.mp4", campaign: "pod",
   state: "ready_for_review", progress: 0, failed_step: null, error: null,
   updated_at: "2026-09-24T10:00:00Z", candidates: 6, approved: 0, clips: 0, posted: 0, busy: false,
   ...over,

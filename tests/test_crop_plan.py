@@ -11,7 +11,7 @@ from clipper.models import Candidate, Meta, Rect, Segment, Transcript, Word
 from clipper.reframe import plan as plan_mod
 from clipper.reframe.faces import FaceSample, FaceTrack
 
-META = Meta(job_id="j", source_kind="youtube", source="u", title="t", description="",
+META = Meta(job_id="j", source_kind="local", source="u", title="t", description="",
             channel="c", duration=300.0, width=1280, height=720, fps=30.0, max_height=2160)
 
 

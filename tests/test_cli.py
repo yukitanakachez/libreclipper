@@ -51,7 +51,7 @@ def test_run_prints_each_candidate(tmp_path, monkeypatch, capsys):
     _candidates(paths, cfg)
     monkeypatch.setattr(cli.pipeline, "run_job", lambda *a, **k: paths)
 
-    assert cli.main(["run", "https://youtu.be/x", "--campaign", "example"]) == 0
+    assert cli.main(["run", "/videos/x.mp4", "--campaign", "example"]) == 0
 
     out = capsys.readouterr().out
     assert "First" in out and "Second" in out
@@ -87,7 +87,7 @@ def test_failure_is_reported_without_a_traceback(tmp_path, monkeypatch, capsys):
         raise RuntimeError("yt-dlp needs updating")
 
     monkeypatch.setattr(cli.pipeline, "run_job", boom)
-    code = cli.main(["run", "https://youtu.be/x", "--campaign", "example"])
+    code = cli.main(["run", "/videos/x.mp4", "--campaign", "example"])
     assert code == 1
     assert "yt-dlp needs updating" in capsys.readouterr().err
 
@@ -100,7 +100,7 @@ def test_run_from_passes_the_starting_step(tmp_path, monkeypatch, capsys):
     seen = {}
     monkeypatch.setattr(cli.pipeline, "run_job",
                         lambda *a, **k: seen.update(k) or paths)
-    assert cli.main(["run", "https://youtu.be/x", "--campaign", "example", "--from", "pick"]) == 0
+    assert cli.main(["run", "/videos/x.mp4", "--campaign", "example", "--from", "pick"]) == 0
     assert seen["start_from"] == "pick"
 
 

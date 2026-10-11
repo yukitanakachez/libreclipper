@@ -48,7 +48,8 @@ def make_runners(cfg: AppConfig) -> dict[str, Callable[[Task], None]]:
     def run(task: Task) -> None:
         start_from = _resume_point(cfg, task)
         try:
-            paths = pipeline.run_job(task.source, task.campaign, cfg, start_from=start_from)
+            paths = pipeline.run_job(task.source, task.campaign, cfg, start_from=start_from,
+                                     job_id=task.job_id)
         except Exception as exc:
             _fail_if_still_queued(cfg, task, exc, start_from or "fetch")
             raise

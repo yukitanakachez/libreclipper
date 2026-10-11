@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -17,10 +19,13 @@ def client(web_cfg, worker):
     return TestClient(create_app(web_cfg, worker), base_url="http://127.0.0.1:8765")
 
 
-def test_create_job_from_a_youtube_link_queues_a_run(client, worker):
-    r = client.post("/api/jobs", json={"source": "https://youtu.be/abc123", "campaign": "pod"})
-    assert r.status_code == 201 and r.json() == {"id": "abc123", "existing": False}
-    assert [(t.kind, t.job_id, t.campaign) for t in worker.pending()] == [("run", "abc123", "pod")]
+def test_a_link_is_refused_clipper_takes_video_files_only(client, worker, web_cfg):
+    for link in ("https://youtu.be/abc123", "https://www.youtube.com/watch?v=abc123",
+                 "http://example.com/episode.mp4"):
+        r = client.post("/api/jobs", json={"source": link, "campaign": "pod"})
+        assert r.status_code == 400 and "video files, not links" in r.json()["detail"]
+    assert worker.pending() == []
+    assert not web_cfg.jobs_dir.exists() or list(web_cfg.jobs_dir.iterdir()) == []
 
 
 def test_create_job_from_a_local_file(client, worker, tmp_path, monkeypatch):
@@ -35,8 +40,7 @@ def test_create_job_from_a_local_file(client, worker, tmp_path, monkeypatch):
 @pytest.mark.parametrize("source,fragment", [
     ("/no/such/file.mp4", "No video file"),
     ("/tmp", "No video file"),
-    ("https://vimeo.com/123", "YouTube"),
-    ("https://www.youtube.com/@channel", "video id"),
+    ("https://vimeo.com/123", "not links"),
 ])
 def test_create_job_rejects_bad_sources_at_submit(client, worker, source, fragment):
     r = client.post("/api/jobs", json={"source": source, "campaign": "pod"})
@@ -46,18 +50,18 @@ def test_create_job_rejects_bad_sources_at_submit(client, worker, source, fragme
 
 def test_create_job_rejects_an_invalid_campaign(client, web_home):
     (web_home / "campaigns" / "bad.yaml").write_text("name: B\nclip_length: { min: 9, max: 1 }\n")
-    r = client.post("/api/jobs", json={"source": "https://youtu.be/x", "campaign": "bad"})
+    r = client.post("/api/jobs", json={"source": "/videos/x.mp4", "campaign": "bad"})
     assert r.status_code == 400
 
 
-def test_submitting_an_existing_job_returns_it_without_queuing(client, worker, web_job):
-    web_job(job_id="vid1", state="done")
-    r = client.post("/api/jobs", json={"source": "https://youtu.be/vid1", "campaign": "pod"})
-    assert r.status_code == 200 and r.json() == {"id": "vid1", "existing": True}
-    assert worker.pending() == []
-    first = client.post("/api/jobs", json={"source": "https://youtu.be/new1", "campaign": "pod"})
-    again = client.post("/api/jobs", json={"source": "https://youtu.be/new1", "campaign": "pod"})
-    assert first.status_code == 201 and again.json()["existing"] is True
+def test_submitting_an_existing_job_returns_it_without_queuing(client, worker, tmp_path, monkeypatch):
+    monkeypatch.setattr(api, "has_video_stream", lambda path: True)
+    video = tmp_path / "new1.mp4"
+    video.write_bytes(b"x")
+    first = client.post("/api/jobs", json={"source": str(video), "campaign": "pod"})
+    again = client.post("/api/jobs", json={"source": str(video), "campaign": "pod"})
+    assert first.status_code == 201 and first.json()["existing"] is False
+    assert again.status_code == 200 and again.json() == {"id": first.json()["id"], "existing": True}
     assert len(worker.pending()) == 1
 
 
@@ -180,7 +184,6 @@ def test_word_fixes(client, web_job):
 
 
 
-
 def test_other_folders_in_the_jobs_folder_are_not_listed(client, web_cfg):
     (web_cfg.jobs_dir / "notes").mkdir(parents=True)
     (web_cfg.jobs_dir / "notes" / "todo.txt").write_text("x")
@@ -197,7 +200,7 @@ def test_retry_resumes_from_the_failed_step(client, worker, web_job, failed_step
     task = worker.pending()[-1]
     assert (task.kind, task.start_from) == (kind, start_from)
     if kind == "run":
-        assert task.source == "https://youtu.be/vid1" and task.campaign == "pod"
+        assert task.source == "/videos/vid1.mp4" and task.campaign == "pod"
 
 
 def test_retry_only_for_failed_jobs(client, web_job):
@@ -212,7 +215,6 @@ def test_repick_guards_edits_unless_forced(client, worker, web_job):
     assert client.post("/api/jobs/vid1/repick", json={"force": True}).status_code == 202
     task = worker.pending()[-1]
     assert (task.kind, task.start_from) == ("run", "pick")
-
 
 
 def test_campaign_listing(client):
@@ -261,18 +263,6 @@ def test_a_rerendered_clip_gets_a_new_version_so_players_reload(client, web_job)
     assert client.get("/api/jobs/vid1").json()["clips"][0]["version"] != first
 
 
-@pytest.mark.parametrize("source", ["https://www.youtube.com/watch?v=../escaped",
-                                    "https://youtu.be/"])
-def test_links_whose_video_id_is_not_a_safe_folder_name_are_rejected(client, worker, web_cfg,
-                                                                      source):
-    r = client.post("/api/jobs", json={"source": source, "campaign": "pod"})
-    assert r.status_code == 400
-    assert worker.pending() == []
-    assert not (web_cfg.jobs_dir.parent / "escaped").exists()
-    assert not (web_cfg.jobs_dir / "job.json").exists()
-
-
-
 def test_other_websites_cannot_trigger_actions(client, worker, web_job):
     web_job()
     r = client.post("/api/jobs/vid1/candidates/1/render", headers={"Origin": "https://evil.example"})
@@ -316,8 +306,6 @@ def test_a_real_video_file_passes_the_submit_check():
 
 
 
-
-
 def test_config_reveal_shows_config_yaml_in_finder(client, web_home, monkeypatch):
     seen = []
     monkeypatch.setattr(api, "reveal_in_finder", lambda p: seen.append(p))
@@ -331,7 +319,7 @@ def test_config_reveal_shows_config_yaml_in_finder(client, web_home, monkeypatch
 
 def test_the_example_template_cannot_start_a_job(client, web_home):
     (web_home / "campaigns" / "example.yaml").write_text("name: Example\nclip_length: { min: 2, max: 20 }\n")
-    r = client.post("/api/jobs", json={"source": "https://youtu.be/abc", "campaign": "example"})
+    r = client.post("/api/jobs", json={"source": "/videos/abc.mp4", "campaign": "example"})
     assert r.status_code == 400 and "template" in r.json()["detail"]
 
 
@@ -345,3 +333,40 @@ def test_an_unexpected_error_says_what_it_was(web_cfg, worker, web_job, monkeypa
     r = quiet.get("/api/jobs")
     assert r.status_code == 500
     assert r.json()["detail"].startswith("Clipper hit an unexpected error:") and "campaign" in r.json()["detail"]
+
+
+def test_a_dropped_video_is_kept_in_the_uploads_folder_and_can_start_a_job(client, worker, web_cfg,
+                                                                           monkeypatch):
+    r = client.post("/api/uploads", params={"name": "Episode 12.mov"}, content=b"video bytes")
+    assert r.status_code == 200
+    kept = Path(r.json()["path"])
+    assert kept == (web_cfg.jobs_dir / "uploads" / "Episode 12.mov").resolve()
+    assert kept.read_bytes() == b"video bytes"
+    assert [p.name for p in kept.parent.iterdir()] == ["Episode 12.mov"]       # no .partial left
+
+    monkeypatch.setattr(api, "has_video_stream", lambda path: True)
+    made = client.post("/api/jobs", json={"source": str(kept), "campaign": "pod"})
+    assert made.status_code == 201 and worker.pending()[0].source == str(kept)
+    assert client.get("/api/jobs").json()[0]["id"] == made.json()["id"]         # uploads/ isn't a job
+
+
+def test_a_dropped_files_name_cannot_leave_the_uploads_folder(client, web_cfg):
+    for name in ("../../escape.mp4", "/etc/passwd", "..\\..\\evil.mp4", "a/b/c.mp4"):
+        r = client.post("/api/uploads", params={"name": name}, content=b"x")
+        assert r.status_code == 200
+        assert Path(r.json()["path"]).parent == (web_cfg.jobs_dir / "uploads").resolve()
+    assert not (web_cfg.jobs_dir.parent / "escape.mp4").exists()
+
+
+def test_a_different_video_with_the_same_name_does_not_replace_the_first(client, web_cfg):
+    first = client.post("/api/uploads", params={"name": "ep.mp4"}, content=b"one").json()["path"]
+    again = client.post("/api/uploads", params={"name": "ep.mp4"}, content=b"one").json()["path"]
+    other = client.post("/api/uploads", params={"name": "ep.mp4"}, content=b"another").json()["path"]
+    assert again == first and other != first                                   # same size: same video
+    assert Path(first).read_bytes() == b"one" and Path(other).read_bytes() == b"another"
+
+
+def test_an_empty_dropped_file_is_refused(client, web_cfg):
+    r = client.post("/api/uploads", params={"name": "empty.mp4"}, content=b"")
+    assert r.status_code == 400 and "empty" in r.json()["detail"]
+    assert list((web_cfg.jobs_dir / "uploads").iterdir()) == []

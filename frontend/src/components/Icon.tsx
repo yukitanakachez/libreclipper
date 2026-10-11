@@ -11,6 +11,7 @@ const PATHS = {
     <path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" /></>,
   trash: <><path d="M4 7h16" /><path d="M9 7V4h6v3" /><path d="M6 7l1 13h10l1-13" /></>,
   plus: <path d="M12 5v14M5 12h14" />,
+  upload: <><path d="M12 15V4" /><path d="M7 9l5-5 5 5" /><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" /></>,
   film: <><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M10 9l5 3-5 3z" /></>,
   retry: <><path d="M20 12a8 8 0 1 1-2.35-5.65L20 8.5" /><path d="M20 4v4.5h-4.5" /></>,
   undo: <><path d="M9 14L4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" /></>,

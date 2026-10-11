@@ -25,7 +25,7 @@ def test_live_pick_returns_candidates(tmp_path):
     data = json.loads(Path("tests/fixtures/transcript_short.json").read_text())
     transcript = Transcript.from_dict(data)
     cfg = AppConfig(jobs_dir=tmp_path)
-    meta = Meta(job_id="j", source_kind="youtube", source="u", title="Side projects",
+    meta = Meta(job_id="j", source_kind="local", source="u", title="Side projects",
                 description="", channel="Example Podcast", duration=transcript.duration,
                 width=1280, height=720, fps=30.0, max_height=1080)
     campaign = Campaign(name="P", slug="p", min_len=15, max_len=60)

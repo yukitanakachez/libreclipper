@@ -304,24 +304,6 @@ def test_output_frame_rate_is_capped_at_60():
     assert "fps=60" in graph
 
 
-def test_section_files_are_keyed_by_time_range_not_candidate_number(tmp_path):
-    """Re-picking renumbers candidates; a file named 03.mp4 from the old clip 3 was
-    reused for the new clip 3 and covered a different moment entirely."""
-    from clipper import jobs
-    from clipper.config import AppConfig
-
-    paths = jobs.paths_for("j", AppConfig(jobs_dir=tmp_path))
-    old = Candidate(n=3, start=188.4, end=212.6, orig_start=188.4, orig_end=212.6,
-                    headline="h", hook="k", reason="r", score=9, post_caption="c")
-    new = Candidate(n=3, start=131.1, end=159.3, orig_start=131.1, orig_end=159.3,
-                    headline="h", hook="k", reason="r", score=9, post_caption="c")
-    same_range = Candidate(n=5, start=131.1, end=159.3, orig_start=131.1, orig_end=159.3,
-                           headline="h", hook="k", reason="r", score=9, post_caption="c")
-
-    assert render.section_path(paths, old) != render.section_path(paths, new)
-    assert render.section_path(paths, new) == render.section_path(paths, same_range), \
-        "an identical range can reuse its download (a retry after a failed render)"
-
 
 def test_default_music_track_is_found_relative_to_the_project(tmp_path, monkeypatch):
     from pathlib import Path

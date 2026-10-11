@@ -8,7 +8,7 @@ inferred from mouth movement.
 
 1. Pick 4 real episodes with different setups: two-person with cuts between cameras,
    two-person locked wide shot, three or more people, one solo.
-2. For each: `.venv/bin/clipper run <url> --campaign <slug> --stop-after reframe`
+2. For each: `.venv/bin/clipper run <file> --campaign <slug> --stop-after reframe`
 3. `.venv/bin/clipper preview <job-id>` writes `jobs/<id>/work/preview_NN.mp4` per candidate.
 4. Watch each preview and record, per clip:
    - Was the crop on the person actually talking? (yes / mostly / no)

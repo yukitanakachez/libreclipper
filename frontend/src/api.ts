@@ -56,6 +56,22 @@ export const api = {
   listCampaigns: () => request<CampaignListing[]>("/api/campaigns"),
   reveal: (id: string, file: string) =>
     request<{ revealed: boolean }>(`${job(id)}/reveal/${encodeURIComponent(file)}`, post()),
+  /** Sends a dropped video to Clipper, which keeps a copy and says where. `onProgress` gets 0–1.
+   *  XMLHttpRequest, not fetch: only it reports how much of a large file has gone. */
+  uploadVideo: (file: File, onProgress?: (done: number) => void) =>
+    new Promise<{ path: string }>((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", `/api/uploads?name=${encodeURIComponent(file.name)}`);
+      xhr.upload.onprogress = (e) => { if (e.lengthComputable) onProgress?.(e.loaded / e.total); };
+      xhr.onerror = () => reject(new Error("Failed to fetch"));
+      xhr.onload = () => {
+        let body: { path?: string; detail?: unknown } = {};
+        try { body = JSON.parse(xhr.responseText); } catch { /* keep the status text */ }
+        if (xhr.status >= 200 && xhr.status < 300 && body.path) resolve({ path: body.path });
+        else reject(new ApiError(xhr.status, typeof body.detail === "string" ? body.detail : xhr.statusText));
+      };
+      xhr.send(file);
+    }),
   chooseFile: () => request<{ path: string | null }>("/api/choose-file", post()),
   revealConfig: () => request<{ revealed: boolean }>("/api/config/reveal", post()),
   getSettings: () => request<Settings>("/api/settings"),

@@ -20,7 +20,7 @@ def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="clipper")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    run = sub.add_parser("run", help="process a YouTube URL or local video file")
+    run = sub.add_parser("run", help="process a video file")
     run.add_argument("source")
     run.add_argument("--campaign", required=True)
     run.add_argument("--stop-after", choices=pipeline.STEPS)
@@ -38,7 +38,7 @@ def _parser() -> argparse.ArgumentParser:
 
     sub.add_parser("doctor", help="check that the setup is complete")
     sub.add_parser("setup", help="download what's missing (ffmpeg, the face model), then check")
-    sub.add_parser("clean", help="delete expired proxies, sections and scratch files")
+    sub.add_parser("clean", help="delete expired working copies and scratch files")
     serve = sub.add_parser("serve", help="start the review app in your browser")
     serve.add_argument("--port", type=int, default=8765)
     serve.add_argument("--no-browser", action="store_true")

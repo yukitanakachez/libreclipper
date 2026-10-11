@@ -56,15 +56,6 @@ describe("explain", () => {
       .toMatchObject({ text: "A file Clipper needs isn't installed yet.", settings: true });
   });
 
-  it("maps YouTube refusing or hiding a video to what to do instead", () => {
-    expect(explain("YouTube refused this clip's download 3 times (403). Wait a minute and press Retry")).toMatchObject({
-      text: "YouTube refused the download.", fix: expect.stringMatching(/Choose file… in New/) });
-    expect(explain("YouTube changed something and yt-dlp needs updating. Run: uv run yt-dlp -U")).toMatchObject({
-      text: "YouTube changed something and the downloader is out of date.", fix: expect.stringMatching(/\.\/start/) });
-    expect(explain("This video is private.")).toEqual({
-      text: "This video is private.", fix: "If you have the video, download it yourself and use Choose file… in New." });
-  });
-
   it("maps a full disk and a broken campaign file", () => {
     expect(explain("ffmpeg failed: No space left on device")).toMatchObject({ text: "This computer's disk is full." });
     expect(explain("pod.yaml: 'name' is required")).toEqual({

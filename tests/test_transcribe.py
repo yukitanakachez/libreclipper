@@ -7,7 +7,7 @@ from clipper.models import Meta
 
 CAMPAIGN = Campaign(name="Pod", slug="pod", min_len=20, max_len=60,
                     vocabulary=["Jane Doe", "Acme"])
-META = Meta(job_id="j", source_kind="youtube", source="u", title="Ep 12 with Jane Doe",
+META = Meta(job_id="j", source_kind="local", source="u", title="Ep 12 with Jane Doe",
             description="d" * 5000, channel="Pod", duration=100.0,
             width=1280, height=720, fps=30.0, max_height=2160)
 

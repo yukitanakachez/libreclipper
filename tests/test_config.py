@@ -10,8 +10,6 @@ def test_defaults_when_no_file(tmp_path, monkeypatch):
     cfg = load_config(None)
     assert cfg.model == "claude-opus-5"
     assert cfg.retention_days == 7
-    assert cfg.max_height == 2160
-    assert cfg.cookies_from_browser is None
     assert cfg.jobs_dir == tmp_path / "jobs"
 
 
@@ -19,15 +17,13 @@ def test_file_values_override_defaults(tmp_path):
     p = tmp_path / "config.yaml"
     p.write_text(
         "model: claude-sonnet-5\nretention_days: 3\n"
-        "max_height: 1080\njobs_dir: /tmp/clipjobs\n"
-        "youtube: { cookies_from_browser: chrome }\n"
+        "jobs_dir: /tmp/clipjobs\n"
+        "max_height: 1080\nyoutube: { cookies_from_browser: chrome }\n"   # from older versions: ignored
     )
     cfg = load_config(p)
     assert cfg.model == "claude-sonnet-5"
     assert cfg.retention_days == 3
-    assert cfg.max_height == 1080
     assert cfg.jobs_dir == Path("/tmp/clipjobs")
-    assert cfg.cookies_from_browser == "chrome"
 
 
 def test_rejects_unknown_model(tmp_path):

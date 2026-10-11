@@ -13,36 +13,43 @@ import re
 import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
-from urllib.parse import parse_qs, urlparse
 
 from clipper.config import AppConfig
 
-YT_HOSTS = {"youtube.com", "www.youtube.com", "m.youtube.com", "youtu.be"}
 VALID_JOB_ID = re.compile(r"^[A-Za-z0-9_-]{1,80}$")
 
 
-def is_youtube(source: str) -> bool:
-    return urlparse(source).netloc.lower() in YT_HOSTS
+NO_LINKS = ("Clipper works from video files, not links. Choose the video file on your "
+            "computer instead.")
 
 
-PATH_PREFIXES = ("shorts", "live", "embed", "v")
+UPLOADS = "uploads"      # inside jobs_dir: videos dropped onto the app, which have no path of their own
+
+
+def uploads_dir(cfg: AppConfig) -> Path:
+    return Path(cfg.jobs_dir) / UPLOADS
+
+
+def upload_path(cfg: AppConfig, name: str, size: int | None = None) -> Path:
+    """Where a dropped video called `name` is kept. Only the file's own name is used, made
+    safe for a folder; a different video with the same name (another size) gets a number."""
+    base = Path(name.replace("\\", "/")).name
+    stem = re.sub(r"[^A-Za-z0-9 ._()-]+", "_", Path(base).stem).strip(" .")[:80] or "video"
+    suffix = re.sub(r"[^A-Za-z0-9.]+", "", Path(base).suffix)[:10] or ".mp4"
+    folder = uploads_dir(cfg)
+    path, k = folder / f"{stem}{suffix}", 2
+    while path.exists() and size is not None and path.stat().st_size != size:
+        path, k = folder / f"{stem}-{k}{suffix}", k + 1
+    return path
+
+
+def is_link(source: str) -> bool:
+    return source.strip().lower().startswith(("http://", "https://"))
 
 
 def job_id_for(source: str) -> str:
-    if is_youtube(source):
-        parsed = urlparse(source)
-        if parsed.netloc.lower() == "youtu.be":
-            return parsed.path.lstrip("/").split("/")[0]
-        video_id = parse_qs(parsed.query).get("v", [None])[0]
-        if video_id:
-            return video_id
-        parts = [p for p in parsed.path.split("/") if p]
-        if len(parts) >= 2 and parts[0] in PATH_PREFIXES:
-            return parts[1]
-        raise ValueError(
-            f"No video id in this YouTube URL: {source}. "
-            "Use a link to a single video (watch, youtu.be, shorts or live)."
-        )
+    if is_link(source):
+        raise ValueError(NO_LINKS)
     path = Path(source).expanduser().resolve()
     slug = re.sub(r"[^a-z0-9]+", "-", path.stem.lower()).strip("-")[:40] or "video"
     digest = hashlib.sha256(str(path).encode()).hexdigest()[:8]

@@ -27,7 +27,6 @@ def test_missing_ffmpeg_does_not_raise(monkeypatch):
 
 
 def test_every_failure_carries_a_fix_instruction(monkeypatch):
-    monkeypatch.setattr(doctor, "LIVE", True)       # safe: keys unset and shell.run faked below
     monkeypatch.setattr(doctor.shell, "run", lambda cmd, **k: "")
     monkeypatch.setattr(doctor, "_font_ok", lambda: False)
     monkeypatch.setattr(doctor, "_model_ok", lambda: False)
@@ -60,16 +59,3 @@ def test_reports_when_clipper_is_not_running_from_this_source_tree(monkeypatch, 
 def test_running_from_source_passes_in_this_checkout():
     results = {name: ok for name, ok, _ in doctor.check_all()}
     assert results["runs from source"] is True
-
-
-def test_ytdlp_check_runs_one_small_search(monkeypatch):
-    monkeypatch.setattr(doctor, "LIVE", True)
-    calls = []
-    ok, _ = doctor.ytdlp_check(run=lambda cmd, timeout=60: calls.append(cmd) or "abc\n")
-    assert ok and "--flat-playlist" in calls[0]
-    def broken(cmd, timeout=60):
-        raise shell.CommandError(cmd, 1, "ERROR: unable to extract")
-    ok, fix = doctor.ytdlp_check(run=broken)
-    assert not ok and "updating yt-dlp" in fix
-
-

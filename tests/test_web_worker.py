@@ -46,7 +46,7 @@ def test_a_failing_runner_does_not_stop_the_queue(tmp_path):
 
 def test_task_interrupted_by_a_restart_runs_first_next_time(tmp_path):
     queue = tmp_path / "queue.json"
-    interrupted = Task("run", "stuck", source="https://youtu.be/stuck", campaign="pod")
+    interrupted = Task("run", "stuck", source="/videos/stuck.mp4", campaign="pod")
     jobs.write_json(queue, {"pending": [Task("render", "other").to_dict()],
                             "running": interrupted.to_dict()})
     seen = []
@@ -101,7 +101,7 @@ def test_a_run_that_dies_before_the_pipeline_starts_marks_the_job_failed(web_cfg
     paths = web_job(state="queued")
     with pytest.raises(Exception):
         tasks.make_runners(web_cfg)["run"](
-            Task("run", "vid1", source="https://youtu.be/vid1", campaign="deleted",
+            Task("run", "vid1", source="/videos/vid1.mp4", campaign="deleted",
                  start_from="pick"))
     status = jobs.get_status(paths)
     assert status["state"] == "failed" and status["failed_step"] == "pick"
@@ -126,7 +126,7 @@ def test_jobs_left_mid_step_with_no_task_are_marked_failed_at_start(web_cfg, web
     resuming = web_job(job_id="resuming", state="picking")
     fine = web_job(job_id="fine", state="ready_for_review")
     w = Worker(web_cfg.jobs_dir / "queue.json", runners={})
-    w.submit(Task("run", "resuming", source="https://youtu.be/resuming", campaign="pod"))
+    w.submit(Task("run", "resuming", source="/videos/resuming.mp4", campaign="pod"))
 
     assert tasks.mark_interrupted(web_cfg, w) == ["stuck"]
     status = jobs.get_status(stuck)
@@ -154,7 +154,7 @@ def test_a_failed_reframe_is_reported_on_that_clip_not_the_whole_job(web_cfg, we
 def _record_start_from(monkeypatch, paths):
     seen = {}
 
-    def fake_run_job(source, campaign, cfg, start_from=None):
+    def fake_run_job(source, campaign, cfg, start_from=None, job_id=None):
         seen["start_from"] = start_from
         return paths
 
@@ -167,7 +167,7 @@ def test_an_interrupted_run_resumes_from_the_step_it_reached(web_cfg, web_job, m
     paths = web_job(state="reframing")
     seen = _record_start_from(monkeypatch, paths)
     tasks.make_runners(web_cfg)["run"](
-        Task("run", "vid1", source="https://youtu.be/vid1", campaign="pod"))
+        Task("run", "vid1", source="/videos/vid1.mp4", campaign="pod"))
     assert seen["start_from"] == "reframe"
 
 
@@ -175,7 +175,7 @@ def test_a_queued_run_starts_where_it_was_asked_to(web_cfg, web_job, monkeypatch
     paths = web_job(state="queued")
     seen = _record_start_from(monkeypatch, paths)
     tasks.make_runners(web_cfg)["run"](
-        Task("run", "vid1", source="https://youtu.be/vid1", campaign="pod", start_from="pick"))
+        Task("run", "vid1", source="/videos/vid1.mp4", campaign="pod", start_from="pick"))
     assert seen["start_from"] == "pick"
 
 

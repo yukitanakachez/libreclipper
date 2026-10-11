@@ -47,22 +47,6 @@ def _provider_row() -> tuple[str, bool, str]:
     return f"AI provider ({provider.name})", providers.is_ready(provider, settings), fix
 
 
-LIVE = True          # tests switch this off: no network calls from the suite
-
-
-def ytdlp_check(run=None) -> tuple[bool, str]:
-    fix = "YouTube search failed — try updating yt-dlp: uv sync --upgrade-package yt-dlp (./start keeps its uv at .tools/uv/uv)"
-    if not LIVE:
-        return True, fix
-    run = run or shell.run
-    try:
-        out = run([shell.ytdlp(), "--flat-playlist", "--playlist-end", "1", "--print", "id",
-                   "ytsearch1:podcast"], timeout=60)
-        return bool(out.strip()), fix
-    except Exception:
-        return False, fix
-
-
 def check_all() -> list[tuple[str, bool, str]]:
     filters = _filters()
     # Clipper fetches these two itself (provision.py): while it does, the fix is the progress.
@@ -84,5 +68,4 @@ def check_all() -> list[tuple[str, bool, str]]:
          "editable (.venv/bin/uv pip install --python .venv/bin/python -e .), then run: "
          "chflags nohidden .venv/lib/python3.13/site-packages/*.pth  (Python 3.13 skips "
          ".pth files carrying macOS's hidden flag)"),
-        ("YouTube search (yt-dlp)", *ytdlp_check()),
     ]

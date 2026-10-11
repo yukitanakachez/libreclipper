@@ -6,38 +6,6 @@ from clipper.config import AppConfig
 from clipper.models import Meta
 
 
-def test_youtube_command_requests_720p_and_no_cookies_by_default(monkeypatch, tmp_path):
-    seen = []
-    monkeypatch.setattr(fetch, "_run_ytdlp_json", lambda *a, **k: {
-        "title": "Ep 1", "channel": "Pod", "description": "d",
-        "duration": 3600.0, "width": 3840, "height": 2160, "fps": 30.0})
-    monkeypatch.setattr(fetch.shell, "run", lambda cmd, **k: seen.append(cmd) or "")
-    monkeypatch.setattr(fetch, "_probe_proxy", lambda p: (1280, 720, 30.0))
-    cfg = AppConfig(jobs_dir=tmp_path)
-    paths = jobs.paths_for("vid", cfg)
-    paths.proxy.write_bytes(b"x")
-    meta = fetch.fetch("https://youtu.be/vid", paths, cfg)
-    cmd = " ".join(seen[0])
-    assert "height<=720" in cmd
-    assert "--cookies-from-browser" not in cmd
-    assert meta.source_kind == "youtube"
-    assert meta.max_height == 2160
-
-
-def test_youtube_command_includes_cookies_when_configured(monkeypatch, tmp_path):
-    seen = []
-    monkeypatch.setattr(fetch, "_run_ytdlp_json", lambda *a, **k: {
-        "title": "t", "channel": "c", "description": "", "duration": 10.0,
-        "width": 1920, "height": 1080, "fps": 30.0})
-    monkeypatch.setattr(fetch.shell, "run", lambda cmd, **k: seen.append(cmd) or "")
-    monkeypatch.setattr(fetch, "_probe_proxy", lambda p: (1280, 720, 30.0))
-    cfg = AppConfig(jobs_dir=tmp_path, cookies_from_browser="chrome")
-    paths = jobs.paths_for("vid", cfg)
-    paths.proxy.write_bytes(b"x")
-    fetch.fetch("https://youtu.be/vid", paths, cfg)
-    assert "--cookies-from-browser" in " ".join(seen[0])
-
-
 def test_local_file_meta_uses_filename_as_title(monkeypatch, tmp_path):
     src = tmp_path / "Ep 12 Jane.mkv"
     src.write_bytes(b"x")
@@ -61,35 +29,36 @@ def test_missing_local_file_raises_clear_error(tmp_path):
         fetch.fetch(str(tmp_path / "nope.mp4"), paths, cfg)
 
 
-def test_extractor_failure_message_tells_user_to_update_ytdlp(monkeypatch, tmp_path):
-    def boom(*a, **k):
-        raise fetch.shell.CommandError(["yt-dlp"], 1, "ERROR: Unable to extract player response")
-    monkeypatch.setattr(fetch, "_run_ytdlp_json", boom)
+def _meta(kind, source):
+    return Meta(job_id="j", source_kind=kind, source=source, title="a", description="",
+                channel="", duration=100.0, width=1920, height=1080, fps=30.0, max_height=1080)
+
+
+def test_a_link_is_refused_before_anything_is_fetched(monkeypatch, tmp_path):
+    ran = []
+    monkeypatch.setattr(fetch.shell, "run", lambda cmd, **k: ran.append(cmd) or "")
     cfg = AppConfig(jobs_dir=tmp_path)
-    paths = jobs.paths_for("vid", cfg)
-    with pytest.raises(fetch.FetchError, match="uv run yt-dlp -U"):
-        fetch.fetch("https://youtu.be/vid", paths, cfg)
+    with pytest.raises(fetch.FetchError, match="video files, not links"):
+        fetch.fetch("https://youtu.be/abc", jobs.paths_for("job", cfg), cfg)
+    assert ran == []
+    with pytest.raises(ValueError, match="video files, not links"):
+        jobs.job_id_for("https://www.youtube.com/watch?v=abc")
 
 
-def test_download_section_for_local_returns_source_unchanged(tmp_path):
+def test_clips_are_cut_from_your_original_file(tmp_path):
     src = tmp_path / "a.mp4"
     src.write_bytes(b"x")
-    meta = Meta(job_id="j", source_kind="local", source=str(src), title="a",
-                description="", channel="", duration=100.0, width=1920,
-                height=1080, fps=30.0, max_height=1080)
-    cfg = AppConfig(jobs_dir=tmp_path)
-    assert fetch.download_section(meta, 10, 20, tmp_path / "unused.mp4", cfg) == src
+    paths = jobs.paths_for("j", AppConfig(jobs_dir=tmp_path))
+    assert fetch.source_file(_meta("local", str(src)), paths) == src
 
 
-def test_youtube_meta_keeps_the_channel_handle(monkeypatch, tmp_path):
-    monkeypatch.setattr(fetch, "_run_ytdlp_json", lambda *a, **k: {
-        "title": "t", "channel": "Just One More Thing", "uploader_id": "@JustOneMoreThing",
-        "description": "", "duration": 10.0, "width": 1920, "height": 1080, "fps": 30.0})
-    monkeypatch.setattr(fetch.shell, "run", lambda cmd, **k: "")
-    monkeypatch.setattr(fetch, "_probe_proxy", lambda p: (1280, 720, 30.0))
-    paths = jobs.paths_for("vid", AppConfig(jobs_dir=tmp_path))
+def test_a_job_made_from_a_link_by_an_older_clipper_renders_from_its_working_copy(tmp_path):
+    paths = jobs.paths_for("j", AppConfig(jobs_dir=tmp_path))
+    old = _meta("youtube", "https://youtu.be/abc")
+    with pytest.raises(fetch.FetchError, match="Start a new job from the video file"):
+        fetch.source_file(old, paths)                       # working copy already cleaned up
     paths.proxy.write_bytes(b"x")
-    assert fetch.fetch("https://youtu.be/vid", paths, AppConfig(jobs_dir=tmp_path)).channel_handle == "@JustOneMoreThing"
+    assert fetch.source_file(old, paths) == paths.proxy
 
 
 def test_old_meta_without_a_handle_still_loads():
@@ -106,49 +75,6 @@ FORBIDDEN = ("https://rr15---sn.googlevideo.com/videoplayback?sig=AE0s2&lsig=APa
 
 
 def _yt_meta():
-    return Meta(job_id="j", source_kind="youtube", source="https://youtu.be/j", title="a",
+    return Meta(job_id="j", source_kind="local", source="/videos/j.mp4", title="a",
                 description="", channel="C", duration=100.0, width=1920, height=1080, fps=30.0,
                 max_height=1080)
-
-
-def test_a_refused_section_download_is_tried_again(monkeypatch, tmp_path):
-    calls, waits = [], []
-
-    def run(cmd, **k):
-        calls.append(cmd)
-        if len(calls) < 3:
-            raise fetch.shell.CommandError(cmd, 1, FORBIDDEN)
-        return ""
-    monkeypatch.setattr(fetch.shell, "run", run)
-    monkeypatch.setattr(fetch.time, "sleep", waits.append)
-    dest = tmp_path / "s" / "a.mp4"
-    assert fetch.download_section(_yt_meta(), 10, 20, dest, AppConfig(jobs_dir=tmp_path)) == dest
-    assert len(calls) == 3 and len(waits) == 2 and waits[1] > waits[0]
-
-
-def test_a_section_youtube_keeps_refusing_says_so_plainly(monkeypatch, tmp_path):
-    calls = []
-
-    def run(cmd, **k):
-        calls.append(cmd)
-        raise fetch.shell.CommandError(cmd, 1, FORBIDDEN)
-    monkeypatch.setattr(fetch.shell, "run", run)
-    monkeypatch.setattr(fetch.time, "sleep", lambda s: None)
-    with pytest.raises(fetch.FetchError) as err:
-        fetch.download_section(_yt_meta(), 10, 20, tmp_path / "a.mp4", AppConfig(jobs_dir=tmp_path))
-    assert len(calls) == fetch.SECTION_TRIES
-    text = str(err.value)
-    assert "YouTube refused" in text and "Retry" in text and "googlevideo" not in text
-
-
-def test_other_section_failures_are_not_retried_and_are_translated(monkeypatch, tmp_path):
-    calls = []
-
-    def run(cmd, **k):
-        calls.append(cmd)
-        raise fetch.shell.CommandError(cmd, 1, "ERROR: [youtube] j: Private video. Sign in")
-    monkeypatch.setattr(fetch.shell, "run", run)
-    monkeypatch.setattr(fetch.time, "sleep", lambda s: None)
-    with pytest.raises(fetch.FetchError, match="private"):
-        fetch.download_section(_yt_meta(), 10, 20, tmp_path / "a.mp4", AppConfig(jobs_dir=tmp_path))
-    assert len(calls) == 1

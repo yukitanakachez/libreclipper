@@ -327,6 +327,19 @@ button.toggle.on, button.toggle.on:hover:not(:disabled) { color: var(--good-ink)
 .new-job { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end; }
 .new-job label { display: grid; gap: 4px; font-size: 0.8125rem; color: var(--muted); }
 .new-job .error { grid-column: 1 / -1; margin: 0; }
+/* The video: one big target to drop a file on, or click for the computer's file chooser. */
+button.dropzone { grid-column: 1 / -1; width: 100%; min-height: 176px; padding: 24px; display: grid; gap: 6px;
+  justify-items: center; align-content: center; text-align: center; font-weight: 400; white-space: normal;
+  background: var(--subtle); border: 1.5px dashed var(--line-strong); border-radius: 14px;
+  transition: background var(--fast) var(--ease), border-color var(--fast) var(--ease); }
+button.dropzone:hover:not(:disabled), button.dropzone.over { background: var(--wash); border-color: var(--blue); }
+button.dropzone.chosen { border-style: solid; background: var(--bg); }
+button.dropzone svg.icon { width: 28px; height: 28px; color: var(--muted); margin-bottom: 4px; }
+button.dropzone.over svg.icon, button.dropzone.chosen svg.icon { color: var(--blue); }
+button.dropzone strong { font-size: 1rem; font-weight: 600; max-width: 100%; overflow-wrap: anywhere; }
+button.dropzone .muted { font-size: 0.8125rem; }
+button.dropzone .progress { width: min(260px, 80%); margin-top: 6px; }
+button.dropzone:disabled { opacity: 1; cursor: progress; }
 .job-status { display: grid; gap: 8px; justify-items: start; }
 
 /* Moments in the list column: title, length, Rendered / Posted / Check framing, the score on the right. */

@@ -26,8 +26,6 @@ class AppConfig:
     model: str = "claude-opus-5"
     jobs_dir: Path = Path("jobs")
     retention_days: int = 7
-    max_height: int = 2160
-    cookies_from_browser: str | None = None
     whisper_backend: str = default_backend()
     clips_dir: Path | None = None       # finished clips; None keeps them in each job folder
 
@@ -59,7 +57,5 @@ def load_config(path: Path | None = None) -> AppConfig:
         jobs_dir=_resolve(raw.get("jobs_dir", "jobs")),
         clips_dir=_resolve(clips) if clips else None,
         retention_days=int(raw.get("retention_days", 7)),
-        max_height=int(raw.get("max_height", 2160)),
-        cookies_from_browser=(raw.get("youtube") or {}).get("cookies_from_browser"),
         whisper_backend=backend,
     )

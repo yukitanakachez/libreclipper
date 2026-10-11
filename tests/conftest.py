@@ -49,10 +49,10 @@ def web_job(web_cfg):
     """A job ready for review: two candidates, crop plans with ±5 s analyzed ranges."""
     def make(job_id="vid1", state="ready_for_review", campaign="pod"):
         paths = jobs.paths_for(job_id, web_cfg)
-        jobs.write_json(paths.request, {"source": f"https://youtu.be/{job_id}",
+        jobs.write_json(paths.request, {"source": f"/videos/{job_id}.mp4",
                                         "campaign": campaign})
         jobs.write_json(paths.meta, Meta(
-            job_id=job_id, source_kind="youtube", source=f"https://youtu.be/{job_id}",
+            job_id=job_id, source_kind="local", source=f"/videos/{job_id}.mp4",
             title="Episode", description="", channel="Pod", duration=30.0,
             width=1280, height=720, fps=30.0, max_height=1080).to_dict())
         jobs.write_json(paths.transcript, _transcript().to_dict())
@@ -74,5 +74,4 @@ def web_job(web_cfg):
 
 @pytest.fixture(autouse=True)
 def _no_live_doctor(monkeypatch):
-    monkeypatch.setattr("clipper.doctor.LIVE", False)
     monkeypatch.setattr("clipper.provision.AUTO", False)

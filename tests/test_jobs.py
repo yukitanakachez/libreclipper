@@ -7,11 +7,6 @@ from clipper.config import AppConfig
 from clipper.models import Segment, Transcript, Word
 
 
-def test_job_id_from_youtube_url_is_the_video_id():
-    assert jobs.job_id_for("https://www.youtube.com/watch?v=dQw4w9WgXcQ") == "dQw4w9WgXcQ"
-    assert jobs.job_id_for("https://youtu.be/dQw4w9WgXcQ?t=42") == "dQw4w9WgXcQ"
-
-
 def test_job_id_from_local_file_is_slug_plus_hash(tmp_path):
     f = tmp_path / "Ep 12 — Jane Doe.mp4"
     f.write_bytes(b"x")
@@ -58,18 +53,6 @@ def test_transcript_roundtrip():
     assert Transcript.from_dict(t.to_dict()) == t
 
 
-def test_job_id_handles_shorts_and_live_and_embed_urls():
-    assert jobs.job_id_for("https://www.youtube.com/shorts/abc123XYZ_-") == "abc123XYZ_-"
-    assert jobs.job_id_for("https://www.youtube.com/live/abc123XYZ_-") == "abc123XYZ_-"
-    assert jobs.job_id_for("https://www.youtube.com/embed/abc123XYZ_-") == "abc123XYZ_-"
-
-
-def test_youtube_url_without_a_video_id_says_so(tmp_path):
-    with pytest.raises(ValueError, match="video id"):
-        jobs.job_id_for("https://www.youtube.com/@somechannel")
-
-
-
 def test_finished_clips_go_to_clips_dir_when_set(tmp_path):
     cfg = AppConfig(jobs_dir=tmp_path / "work", clips_dir=tmp_path / "clips")
     paths = jobs.paths_for("abc", cfg)
@@ -95,9 +78,9 @@ def test_find_job_rejects_unsafe_ids_and_never_creates_folders(tmp_path):
 def test_read_request_falls_back_for_jobs_made_before_job_json(tmp_path):
     cfg = AppConfig(jobs_dir=tmp_path)
     paths = jobs.paths_for("old", cfg)
-    jobs.write_json(paths.meta, {"source": "https://youtu.be/old"})
+    jobs.write_json(paths.meta, {"source": "/videos/old.mp4"})
     jobs.write_json(paths.candidates, {"campaign": "pod", "candidates": []})
-    assert jobs.read_request(paths) == {"source": "https://youtu.be/old", "campaign": "pod"}
+    assert jobs.read_request(paths) == {"source": "/videos/old.mp4", "campaign": "pod"}
 
 
 def test_candidate_without_edited_field_loads_with_false():

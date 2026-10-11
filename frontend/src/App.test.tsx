@@ -146,7 +146,7 @@ describe("App", () => {
     render(<App />);
     await userEvent.click(screen.getByRole("button", { name: /^new/i }));
     expect(await screen.findByRole("dialog", { name: "New clip job" })).toBeInTheDocument();
-    expect(screen.getByLabelText(/youtube link or file/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/video file/i)).toBeInTheDocument();
     expect(screen.queryByRole("tab")).toBeNull();
   });
 
@@ -173,7 +173,7 @@ describe("App", () => {
     render(<App />);
     await screen.findByRole("link", { name: /episode 1/i });
     await userEvent.keyboard("n");
-    expect(await screen.findByLabelText(/youtube link or file/i)).toBeInTheDocument();
+    expect(await screen.findByLabelText(/video file/i)).toBeInTheDocument();
   });
 
   it("N opens the New sheet from an open job too", async () => {
@@ -220,13 +220,12 @@ describe("App", () => {
     expect(window.location.hash).toBe("#/clips/vid1");
   });
 
-  it("typing j/k/n in the New form fires no shortcut", async () => {
+  it("j/k/n fire no shortcut while the New sheet is open", async () => {
     window.location.hash = "#/";
     render(<App />);
     await userEvent.click(await screen.findByRole("button", { name: /^new/i }));
-    const field = await screen.findByLabelText(/youtube link or file/i);
-    await userEvent.type(field, "jkn");
-    expect(field).toHaveValue("jkn");
+    const field = await screen.findByLabelText(/video file/i);
+    await userEvent.keyboard("jkn");
     expect(field).toHaveFocus();                                                  // J/K didn't move it
     expect(screen.getAllByRole("dialog")).toHaveLength(1);
     expect(window.location.hash).toBe("#/");

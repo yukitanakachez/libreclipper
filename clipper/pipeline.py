@@ -68,11 +68,13 @@ def run_job(
     cfg: AppConfig,
     stop_after: str | None = None,
     start_from: str | None = None,
+    job_id: str | None = None,
 ) -> JobPaths:
-    """Run the steps in order. start_from reuses saved output of the steps before it."""
+    """Run the steps in order. start_from reuses saved output of the steps before it.
+    job_id names an existing job's folder (else it comes from the file's name and place)."""
     campaign = load_campaign(campaign_slug, campaign_root())   # before any download
     provision.ensure()                 # a first run may still be fetching ffmpeg: wait for it
-    paths = jobs.paths_for(jobs.job_id_for(source), cfg)
+    paths = jobs.paths_for(job_id or jobs.job_id_for(source), cfg)
     _record_request(paths, source, campaign_slug)
     first = STEPS.index(start_from) if start_from else 0
     step = "fetch"
@@ -196,8 +198,10 @@ def _leftover_partials(paths: JobPaths, now: float, everything: bool) -> list[Pa
 
 
 def clean(cfg: AppConfig, now: float | None = None, all_partials: bool = False) -> list[Path]:
-    """Delete working files once a job has aged out, and leftover partial files.
-    Finished clips are kept. all_partials is only safe when nothing is rendering."""
+    """Delete working files once a job has aged out, and leftover partial files: its working
+    copy, its scratch folder, and the video itself if it was dropped onto the app (a file you
+    chose from disk is yours and is never touched). Finished clips are kept. all_partials is
+    only safe when nothing is rendering."""
     now = now or time.time()
     cutoff = now - cfg.retention_days * 86400
     removed: list[Path] = []
@@ -205,13 +209,21 @@ def clean(cfg: AppConfig, now: float | None = None, all_partials: bool = False) 
     if not root.exists():
         return removed
 
+    in_use: set[Path] = set()            # dropped videos that a job still young enough needs
     for job_dir in sorted(root.iterdir()):
+        if job_dir.name == jobs.UPLOADS:
+            continue
         located = jobs.find_job(job_dir.name, cfg)          # knows where clips_dir is
         for partial in _leftover_partials(located, now, all_partials) if located else []:
             partial.unlink(missing_ok=True)
             removed.append(partial)
         paths = JobPaths(job_dir)
-        if not paths.status.exists() or _last_activity(paths) > cutoff:
+        if not paths.status.exists():
+            continue
+        if _last_activity(paths) > cutoff:
+            source = jobs.read_request(paths).get("source")
+            if source:
+                in_use.add(Path(source))
             continue
         if paths.proxy.exists():
             paths.proxy.unlink()
@@ -220,4 +232,12 @@ def clean(cfg: AppConfig, now: float | None = None, all_partials: bool = False) 
             if folder.exists():
                 shutil.rmtree(folder)
                 removed.append(folder)
+
+    uploads = jobs.uploads_dir(cfg)
+    for video in sorted(uploads.iterdir()) if uploads.is_dir() else []:
+        half_copied = video.name.endswith(".partial") and all_partials
+        unused = video.resolve() not in in_use and video.stat().st_mtime < cutoff
+        if half_copied or unused:
+            video.unlink(missing_ok=True)
+            removed.append(video)
     return removed

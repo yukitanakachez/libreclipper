@@ -1,4 +1,4 @@
-"""Thin wrapper around external commands (yt-dlp, ffmpeg, ffprobe)."""
+"""Thin wrapper around external commands (ffmpeg, ffprobe)."""
 
 from __future__ import annotations
 
@@ -41,15 +41,6 @@ def managed_tool(name: str) -> Path:
     return project_home() / ".tools" / "bin" / name
 
 
-def ytdlp() -> str:
-    """yt-dlp ships inside the venv, whose bin dir is rarely on the user's PATH."""
-    override = os.environ.get("CLIPPER_YTDLP")
-    if override:
-        return override
-    sibling = Path(sys.executable).with_name("yt-dlp")
-    return str(sibling) if sibling.exists() else "yt-dlp"
-
-
 def filter_path(path) -> str:
     """A path as an ffmpeg filter option value inside a -filter_complex graph.
 
@@ -78,7 +69,7 @@ def ffmpeg() -> str:
 
 def tools_on_path() -> None:
     """Put the chosen ffmpeg's folder first on PATH, for the programs that run "ffmpeg" by
-    name themselves (mlx-whisper loading audio, yt-dlp joining video and sound)."""
+    name themselves (mlx-whisper loading audio)."""
     binary = Path(ffmpeg())
     if binary.is_absolute():
         folders = os.environ.get("PATH", "").split(os.pathsep)

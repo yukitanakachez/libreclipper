@@ -105,27 +105,6 @@ def test_project_home_falls_back_to_the_package_parent(monkeypatch, tmp_path):
     assert shell.project_home() == shell.PACKAGE_PARENT
 
 
-def test_ytdlp_prefers_the_binary_next_to_the_running_interpreter(monkeypatch, tmp_path):
-    """The CLI runs from a venv whose bin dir is usually not on the user's PATH."""
-    monkeypatch.delenv("CLIPPER_YTDLP", raising=False)
-    bin_dir = tmp_path / "bin"
-    bin_dir.mkdir()
-    (bin_dir / "yt-dlp").write_text("#!/bin/sh\n")
-    monkeypatch.setattr(shell.sys, "executable", str(bin_dir / "python"))
-    assert shell.ytdlp() == str(bin_dir / "yt-dlp")
-
-
-def test_ytdlp_falls_back_to_path(monkeypatch, tmp_path):
-    monkeypatch.delenv("CLIPPER_YTDLP", raising=False)
-    monkeypatch.setattr(shell.sys, "executable", str(tmp_path / "nowhere" / "python"))
-    assert shell.ytdlp() == "yt-dlp"
-
-
-def test_ytdlp_env_override_wins(monkeypatch):
-    monkeypatch.setenv("CLIPPER_YTDLP", "/opt/bin/yt-dlp")
-    assert shell.ytdlp() == "/opt/bin/yt-dlp"
-
-
 def test_describe_failure_reads_like_a_person_wrote_it():
     stopped = shell.CommandError(["ffmpeg"], 255, "frame= 0 fps=0.0\nExiting normally, received signal 15.\n")
     assert shell.describe_failure(stopped) == shell.INTERRUPTED

@@ -105,26 +105,25 @@ def create_job(body: NewJob, request: Request):
     source = body.source.strip()
     if body.campaign in TEMPLATES:
         raise HTTPException(400, f"'{body.campaign}' is a template: copy it to campaigns/<creator>.yaml, "
-                                 "or use Any creator (auto).")
+                                 "or use Any video (auto).")
     try:
         load_campaign(body.campaign, campaign_root())
     except CampaignError as exc:
         raise HTTPException(400, str(exc)) from exc
-    if source.lower().startswith(("http://", "https://")) and not jobs.is_youtube(source):
-        raise HTTPException(400, "Only YouTube links or local video files are supported.")
-    if not jobs.is_youtube(source):
-        path = Path(source).expanduser()
-        if not path.is_file():
-            raise HTTPException(400, f"No video file at {path}.")
-        if not has_video_stream(path):
-            raise HTTPException(400, f"That file has no video: {path.name}")
-        source = str(path.resolve())
+    if jobs.is_link(source):
+        raise HTTPException(400, jobs.NO_LINKS)
+    path = Path(source).expanduser()
+    if not path.is_file():
+        raise HTTPException(400, f"No video file at {path}.")
+    if not has_video_stream(path):
+        raise HTTPException(400, f"That file has no video: {path.name}")
+    source = str(path.resolve())
     try:
         job_id = jobs.job_id_for(source)
     except ValueError as exc:
         raise HTTPException(400, str(exc)) from exc
     if not jobs.VALID_JOB_ID.fullmatch(job_id):          # it becomes a folder name
-        raise HTTPException(400, f"That link has no usable video id: {source}")
+        raise HTTPException(400, f"That file's name can't be used for a job: {source}")
 
     existing = jobs.find_job(job_id, cfg)
     if existing is not None and (existing.status.exists() or worker.is_busy(job_id)):
@@ -304,6 +303,27 @@ def reveal_config():
         raise HTTPException(404, "There's no config.yaml yet. Copy config.yaml.example to make one.")
     reveal_in_finder(path)
     return {"revealed": True}
+
+
+@router.post("/uploads")
+async def upload(request: Request, name: str):
+    """Keep a video that was dropped onto the page: a browser hands over a dropped file's
+    contents but never where it is on disk, so the app needs its own copy to work from."""
+    cfg, _ = _ctx(request)
+    declared = request.headers.get("content-length")
+    dest = jobs.upload_path(cfg, name, int(declared) if declared and declared.isdigit() else None)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    partial = dest.with_name(dest.name + ".partial")
+    try:
+        with open(partial, "wb") as out:
+            async for chunk in request.stream():
+                out.write(chunk)
+        if partial.stat().st_size == 0:
+            raise HTTPException(400, "That file is empty.")
+        partial.replace(dest)
+    finally:
+        partial.unlink(missing_ok=True)
+    return {"path": str(dest.resolve())}
 
 
 @router.post("/choose-file")

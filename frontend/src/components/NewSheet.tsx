@@ -5,7 +5,7 @@ import NewJobForm from "./NewJobForm";
 
 export default function NewSheet({ onClose }: { onClose: () => void }) {
   return (
-    <Dialog title="New clip job" onClose={onClose} initialFocus="input, select, textarea">
+    <Dialog title="New clip job" onClose={onClose} initialFocus=".dropzone">
       <NewJobForm onCreated={(id) => { go({ id }); notifyChanged(); onClose(); }} />
     </Dialog>
   );

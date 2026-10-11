@@ -61,7 +61,7 @@ def install(dest: Path | None = None, port: int = 8765) -> Path:
     macos = app / "Contents" / "MacOS"
     macos.mkdir(parents=True, exist_ok=True)
     # Tool locations set for this shell (e.g. a shared ffmpeg build) are kept for the app.
-    env = {k: os.environ[k] for k in ("CLIPPER_FFMPEG", "CLIPPER_FFPROBE", "CLIPPER_YTDLP")
+    env = {k: os.environ[k] for k in ("CLIPPER_FFMPEG", "CLIPPER_FFPROBE")
            if os.environ.get(k)}
     script = macos / NAME
     script.write_text(launcher(shell.project_home().resolve(), sys.executable, port, env))

@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { api } from "../api";
+import { api, ApiError } from "../api";
 import { onChanged } from "../changes";
 import NewSheet from "./NewSheet";
 
 vi.mock("../api", async () => {
   const real = await vi.importActual<typeof import("../api")>("../api");
-  return { ...real, api: { ...real.api, listCampaigns: vi.fn(), createJob: vi.fn(), chooseFile: vi.fn() } };
+  return { ...real, api: { ...real.api, listCampaigns: vi.fn(), createJob: vi.fn(), chooseFile: vi.fn(),
+                            uploadVideo: vi.fn() } };
 });
 
 beforeEach(() => {
@@ -19,28 +20,71 @@ beforeEach(() => {
 
 afterEach(() => { window.location.hash = ""; });
 
+const zone = () => screen.getByRole("button", { name: /^video file/i });
+
+/** Clicks the drop area and "chooses" this file in the computer's file chooser. */
+async function chooseFile(path: string) {
+  vi.mocked(api.chooseFile).mockResolvedValue({ path });
+  await userEvent.click(zone());
+  await screen.findByText(path.split("/").pop()!);
+}
+
 describe("NewSheet", () => {
-  it("starts a clip job from a YouTube link and opens it", async () => {
+  it("clicking the drop area opens the file chooser; the chosen video starts a job and opens it", async () => {
     vi.mocked(api.createJob).mockResolvedValue({ id: "vid9", existing: false });
     const onClose = vi.fn();
     render(<NewSheet onClose={onClose} />);
     await screen.findByRole("option", { name: "Pod" });
-    await userEvent.type(screen.getByLabelText(/youtube link or file/i), "https://youtu.be/vid9");
+    expect(zone()).toHaveTextContent(/drop a video here/i);
+    expect(screen.getByRole("button", { name: /^start$/i })).toBeDisabled();       // nothing chosen yet
+    await chooseFile("/videos/vid9.mp4");
+    expect(zone()).toHaveAccessibleName(/vid9\.mp4/);
+    expect(api.uploadVideo).not.toHaveBeenCalled();                               // chosen in place: no copy
     await userEvent.click(screen.getByRole("button", { name: /^start$/i }));
-    expect(api.createJob).toHaveBeenCalledWith("https://youtu.be/vid9", "pod");
+    expect(api.createJob).toHaveBeenCalledWith("/videos/vid9.mp4", "pod");
     expect(window.location.hash).toBe("#/clips/vid9");
     expect(onClose).toHaveBeenCalled();
   });
 
-  it("starts a clip job from a chosen file", async () => {
-    vi.mocked(api.chooseFile).mockResolvedValue({ path: "/videos/episode.mp4" });
+  it("a video dropped on the area is copied in, with progress, then starts a job", async () => {
+    let finish!: (v: { path: string }) => void;
+    vi.mocked(api.uploadVideo).mockImplementation((_file, onProgress) => {
+      onProgress?.(0.42);
+      return new Promise((resolve) => { finish = resolve; });
+    });
     vi.mocked(api.createJob).mockResolvedValue({ id: "episode", existing: false });
     render(<NewSheet onClose={vi.fn()} />);
     await screen.findByRole("option", { name: "Pod" });
-    await userEvent.click(screen.getByRole("button", { name: /choose file/i }));
-    expect(await screen.findByDisplayValue("/videos/episode.mp4")).toBeInTheDocument();
+    const file = new File(["x"], "Episode 12.mov", { type: "video/quicktime" });
+    fireEvent.drop(zone(), { dataTransfer: { files: [file] } });
+    expect(await screen.findByText(/copying episode 12\.mov… 42%/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^start$/i })).toBeDisabled();       // not while copying
+    finish({ path: "/clipper/jobs/uploads/Episode 12.mov" });
+    expect(await screen.findByText("Episode 12.mov")).toBeInTheDocument();
+    expect(vi.mocked(api.uploadVideo).mock.calls[0][0]).toBe(file);
     await userEvent.click(screen.getByRole("button", { name: /^start$/i }));
-    expect(api.createJob).toHaveBeenCalledWith("/videos/episode.mp4", "pod");
+    expect(api.createJob).toHaveBeenCalledWith("/clipper/jobs/uploads/Episode 12.mov", "pod");
+  });
+
+  it("where the server can't open a file chooser, the browser's own is used instead", async () => {
+    vi.mocked(api.chooseFile).mockRejectedValue(new ApiError(501, "Paste the video's file path instead."));
+    const opened = vi.spyOn(HTMLInputElement.prototype, "click").mockImplementation(() => {});
+    render(<NewSheet onClose={vi.fn()} />);
+    await screen.findByRole("option", { name: "Pod" });
+    await userEvent.click(zone());
+    expect(opened).toHaveBeenCalled();
+    expect(screen.queryByText(/paste the video/i)).toBeNull();                    // not shown as an error
+    opened.mockRestore();
+  });
+
+  it("a copy that fails says why, and the area is ready for another try", async () => {
+    vi.mocked(api.uploadVideo).mockRejectedValue(new Error("That file is empty."));
+    render(<NewSheet onClose={vi.fn()} />);
+    await screen.findByRole("option", { name: "Pod" });
+    fireEvent.drop(zone(), { dataTransfer: { files: [new File([], "empty.mp4")] } });
+    expect(await screen.findByText("That file is empty.")).toBeInTheDocument();
+    expect(zone()).toHaveTextContent(/drop a video here/i);
+    expect(zone()).toBeEnabled();
   });
 
   it("shows invalid campaigns as disabled with the reason", async () => {
@@ -49,13 +93,13 @@ describe("NewSheet", () => {
   });
 
   it("shows a clip job error inline, and stays open", async () => {
-    vi.mocked(api.createJob).mockRejectedValue(new Error("That doesn't look like a YouTube link."));
+    vi.mocked(api.createJob).mockRejectedValue(new Error("No video file at /nope."));
     const onClose = vi.fn();
     render(<NewSheet onClose={onClose} />);
     await screen.findByRole("option", { name: "Pod" });
-    await userEvent.type(screen.getByLabelText(/youtube link or file/i), "nope");
+    await chooseFile("/nope.mp4");
     await userEvent.click(screen.getByRole("button", { name: /^start$/i }));
-    expect(await screen.findByText(/doesn't look like a youtube link/i)).toBeInTheDocument();
+    expect(await screen.findByText(/no video file at/i)).toBeInTheDocument();
     expect(onClose).not.toHaveBeenCalled();
     expect(window.location.hash).toBe("");
   });
@@ -99,10 +143,10 @@ describe("NewSheet", () => {
     expect(document.activeElement).toBe(button);
   });
 
-  it("focuses the first form field on open", async () => {
+  it("focuses the drop area on open", async () => {
     render(<NewSheet onClose={vi.fn()} />);
     await screen.findByRole("dialog");
-    expect(screen.getByLabelText(/youtube link or file/i)).toHaveFocus();
+    expect(zone()).toHaveFocus();
   });
 
   it("tells the list a new item exists", async () => {
@@ -111,7 +155,7 @@ describe("NewSheet", () => {
     const stop = onChanged(heard);
     render(<NewSheet onClose={vi.fn()} />);
     await screen.findByRole("option", { name: "Pod" });
-    await userEvent.type(screen.getByLabelText(/youtube link or file/i), "https://youtu.be/vid9");
+    await chooseFile("/videos/vid9.mp4");
     await userEvent.click(screen.getByRole("button", { name: /^start$/i }));
     expect(heard).toHaveBeenCalled();
     stop();
