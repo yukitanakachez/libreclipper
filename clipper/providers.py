@@ -215,21 +215,32 @@ def _parse(text: str) -> dict:
         raise ProviderError(f"The model's answer wasn't valid JSON: {exc}") from exc
 
 
+# Room for Claude's thinking and its answer together. A two-hour transcript can take well over
+# 16,000 tokens of thinking alone, which once left nothing for the answer.
+ANTHROPIC_MAX_TOKENS = 64000
+
+
 def _anthropic_json(client, model: str, system: str, user: str, schema: dict) -> dict:
-    # betas/fallbacks live on the beta namespace; client.messages.create rejects them.
-    response = client.beta.messages.create(
+    # betas/fallbacks live on the beta namespace; client.messages rejects them. Streamed: a long
+    # transcript takes minutes, and the SDK refuses a budget this large on a plain request.
+    with client.beta.messages.stream(
         model=model,
-        max_tokens=16000,
+        max_tokens=ANTHROPIC_MAX_TOKENS,
         thinking={"type": "adaptive"},
         betas=["server-side-fallback-2026-07-01"],
         fallbacks="default",
         system=system,
         output_config={"format": {"type": "json_schema", "schema": schema}},
         messages=[{"role": "user", "content": user}],
-    )
-    if getattr(response, "stop_reason", None) == "refusal":
+    ) as stream:
+        response = stream.get_final_message()
+    stop = getattr(response, "stop_reason", None)
+    if stop == "refusal":
         raise ProviderError("Claude refused to process this transcript.")
     text = next((b.text for b in response.content if getattr(b, "type", "") == "text"), None)
+    if stop == "max_tokens":              # cut off mid-thought or mid-answer: nothing usable
+        raise ProviderError("Claude ran out of room before finishing its answer. Press Retry; "
+                            "if it keeps happening, this video may be too long for one pass.")
     if text is None:
         raise ProviderError("No JSON returned by the model.")
     return _parse(text)

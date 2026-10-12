@@ -30,7 +30,10 @@ class FakeClient:
     def __init__(self, payload, stop_reason="end_turn"):
         self.payload, self.stop_reason, self.kwargs = payload, stop_reason, None
         self.messages = self
-        self.beta = self          # pick() calls client.beta.messages.create
+        self.beta = self          # pick() calls client.beta.messages.stream
+
+    def stream(self, **kwargs):
+        return Stream(lambda: self.create(**kwargs))
 
     def create(self, **kwargs):
         self.kwargs = kwargs
@@ -40,13 +43,34 @@ class FakeClient:
             type = "text"
             text = json.dumps(payload)
 
+        class Thinking:
+            type = "thinking"
+            thinking = ""
+
         class Resp:
             pass
 
         r = Resp()
-        r.content = [Block()]
+        # Cut off for length while still thinking: no answer block at all.
+        r.content = [Thinking()] if self.stop_reason == "max_tokens" else [Block()]
         r.stop_reason = self.stop_reason
         return r
+
+
+class Stream:
+    """What client.beta.messages.stream(...) gives back: used as `with ... as stream`."""
+
+    def __init__(self, respond):
+        self.respond = respond
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    def get_final_message(self):
+        return self.respond()
 
 
 def payload(n=2):
@@ -92,7 +116,7 @@ def test_pick_writes_empty_list_when_nothing_survives(tmp_path):
 
 
 class StrictClient:
-    """Mirrors the real SDK: messages.create rejects betas/fallbacks, beta.messages accepts them."""
+    """Mirrors the real SDK: client.messages rejects betas/fallbacks, client.beta.messages accepts them."""
 
     def __init__(self, payload):
         self.payload = payload
@@ -107,10 +131,10 @@ class StrictClient:
                 return outer._response()
 
         class BetaMessages:
-            def create(self, **kwargs):
+            def stream(self, **kwargs):
                 outer.used_beta = True
                 outer.kwargs = kwargs
-                return outer._response()
+                return Stream(outer._response)
 
         class Beta:
             messages = BetaMessages()
@@ -139,7 +163,7 @@ def test_pick_uses_the_beta_namespace_so_fallbacks_are_accepted(tmp_path):
     paths = jobs.paths_for("j", cfg)
     client = StrictClient(payload())
     out = pick.pick(transcript(), META, CAMPAIGN, cfg, paths, client=client)
-    assert client.used_beta, "must call client.beta.messages.create, not client.messages.create"
+    assert client.used_beta, "must call client.beta.messages.stream, not client.messages"
     assert client.kwargs["betas"] == ["server-side-fallback-2026-07-01"]
     assert client.kwargs["fallbacks"] == "default"
     assert len(out) == 2
@@ -222,3 +246,19 @@ def test_pick_without_a_key_says_where_to_add_one(tmp_path, monkeypatch):
     cfg = AppConfig(jobs_dir=tmp_path)
     with pytest.raises(pick.PickError, match="Settings"):
         pick.pick(transcript(), META, CAMPAIGN, cfg, jobs.paths_for("j", cfg))
+
+
+def test_a_long_transcript_gets_room_for_thinking_and_the_answer(tmp_path):
+    cfg = AppConfig(jobs_dir=tmp_path)
+    client = FakeClient(payload())
+    pick.pick(transcript(), META, CAMPAIGN, cfg, jobs.paths_for("j", cfg), client=client)
+    assert client.kwargs["max_tokens"] >= 64000        # 16,000 was all spent thinking on a 2 h video
+
+
+def test_an_answer_cut_off_for_length_says_so_instead_of_no_json(tmp_path):
+    cfg = AppConfig(jobs_dir=tmp_path)
+    paths = jobs.paths_for("j", cfg)
+    with pytest.raises(pick.PickError, match="ran out of room"):
+        pick.pick(transcript(), META, CAMPAIGN, cfg, paths,
+                  client=FakeClient(payload(), stop_reason="max_tokens"))
+    assert not paths.candidates.exists()
