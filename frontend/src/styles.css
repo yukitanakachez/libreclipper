@@ -162,7 +162,8 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ink); margin: 
 /* Nothing open: one scrolling page, Next up over the board. */
 .main.home { display: block; overflow: auto; padding: 24px 32px 32px; }
 /* Focused only by the skip link. */
-.main:focus, .workspace:focus, .next-up:focus, .rendered-page:focus, /* First in tab order; shows only while focused. */
+.main:focus, .workspace:focus, .next-up:focus, .rendered-page:focus { outline: none; }
+/* First in tab order; shows only while focused. */
 .skip-link { position: absolute; left: 8px; top: 8px; z-index: 10; padding: 8px 12px; border-radius: 8px;
   background: var(--bg); color: var(--ink); border: 1px solid var(--line-strong); }
 .skip-link:not(:focus) { width: 1px; height: 1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%);
