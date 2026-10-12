@@ -294,6 +294,13 @@ button.toggle.on, button.toggle.on:hover:not(:disabled) { color: var(--good-ink)
 /* ── Settings and first-run setup ── */
 .settings-page { display: grid; gap: 24px; align-content: start; max-width: 880px; animation: fade var(--enter) var(--ease); }
 .settings-page:focus { outline: none; }
+/* The setup and Settings page is one centred column. Its title, the provider cards and the
+   buttons are centred; section headings, field labels and the checklist read from the left. */
+.settings-page { margin-inline: auto; }
+.settings-page > h2 { text-align: center; }
+.settings-page .providers { display: flex; flex-wrap: wrap; justify-content: center; }
+.settings-page .provider { flex: 0 1 156px; justify-items: center; text-align: center; }
+.settings-page .actions { justify-content: center; }
 .settings-page h2 { margin: 0 0 4px; font-size: 1.5rem; }
 .settings-page p { margin: 0; }
 .settings-section { display: grid; gap: 12px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); }
